@@ -1,0 +1,32 @@
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 60px;
+  color: white;
+}
+
+/* Fix UL default spacing */
+.nav-links {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* Fix spacing and color */
+.nav-links a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: white;
+  font-size: 14px;
+}
+
+/* Menu icon (for mobile later) */
+.menu-icon {
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+}
