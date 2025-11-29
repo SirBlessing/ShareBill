@@ -1,6 +1,6 @@
 import React from "react";
 
-import phone21 from "../assets/images/phone21.PNG";
+import phone21 from "../assets/images/phone21.png";
 
 function CreateAccount() {
   return (
