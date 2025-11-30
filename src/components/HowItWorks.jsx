@@ -7,7 +7,7 @@ import React from "react";
 import howitworkimage from "../assets/images/howitworkimage.png";
 export default function HowItWorks() {
   return (
-    <div className="how-container">
+    <div id="how-it-works" className="how-container">
 
       {/* LEFT IMAGE SIDE */}
       <div className="how-left">

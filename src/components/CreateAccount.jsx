@@ -1,8 +1,84 @@
-import React from "react";
-import { useNavigate,  Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import phone21 from "../assets/images/phone21.png";
+import axios from "axios";
 
 function CreateAccount() {
+  const navigate = useNavigate();
+
+  const [form, setForm] = useState({
+    fullname: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // -------------------------
+  // VALIDATION FIXED HERE
+  // -------------------------
+  const validate = () => {
+    const { fullname, email, password, confirmPassword } = form;
+
+    if (!fullname || !email || !password || !confirmPassword) {
+      setError("All fields are required.");
+      return false;
+    }
+
+    // Basic email / phone validation
+    const emailRegex = /\S+@\S+\.\S+/;
+    const phoneRegex = /^[0-9]{10,15}$/;
+
+    if (!emailRegex.test(email) && !phoneRegex.test(email)) {
+      setError("Enter a valid email or phone number.");
+      return false;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return false;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await axios.post("https://YOUR_BACKEND_URL/signup", {
+        fullname: form.fullname,
+        email: form.email,
+        password: form.password,
+      });
+
+      if (res.data.success) {
+        navigate("/login"); // Redirect after signup success
+      } else {
+        setError(res.data.message || "Signup failed.");
+      }
+    } catch (err) {
+      setError("Network error. Try again.");
+    }
+
+    setLoading(false);
+  };
+
   return (
     <div className="create-account-container">
       <div className="create-left">
@@ -11,29 +87,54 @@ function CreateAccount() {
           Let's get you started — Bill sharing just became stress-free
         </p>
 
-        <form className="create-form">
+        {error && <p className="error-text">{error}</p>}
+
+        <form className="create-form" onSubmit={handleCreate}>
           <label>Full Name</label>
-          <input type="text" placeholder="Enter Full Name" />
+          <input
+            name="fullname"
+            type="text"
+            placeholder="Enter full name"
+            onChange={handleChange}
+          />
 
           <label>Email / Phone</label>
-          <input type="text" placeholder="Input email/phone" />
+          <input
+            name="email"
+            type="text"
+            placeholder="Enter email or phone"
+            onChange={handleChange}
+          />
 
           <label>Password</label>
-          <input type="password" placeholder="Input password" />
+          <input
+            name="password"
+            type="password"
+            placeholder="Create password"
+            onChange={handleChange}
+          />
 
           <label>Confirm Password</label>
-          <input type="password" placeholder="Confirm password" />
+          <input
+            name="confirmPassword"
+            type="password"
+            placeholder="Confirm password"
+            onChange={handleChange}
+          />
 
-          <button type="submit" className="create-btn">
-            Create Account
+          <button className="auth-btn" disabled={loading}>
+            {loading ? <div className="spinner"></div> : "Create Account"}
           </button>
 
           <p className="login-text">
-            Already have an account? <span><Link to="/Login">Login Here</Link></span>
+            Already have an account?{" "}
+            <span>
+              <Link to="/login">Login Here</Link>
+            </span>
           </p>
 
           <p className="terms">
-            By logging in, you agree to our <span>Terms & Privacy</span>
+            By signing up, you agree to our <span>Terms & Privacy</span>
           </p>
         </form>
       </div>

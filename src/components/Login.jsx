@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import phone21 from "../assets/images/phone21.png";
 
 function Login() {
+ const navigate = useNavigate();
+
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,6 +25,9 @@ function Login() {
   const handleLogin = async () => {
     if (!validate()) return;
 
+    setLoading(true);
+    setError("");
+
     try {
       const res = await axios.post(
         "https://YOUR_BACKEND_URL/login",
@@ -29,13 +35,16 @@ function Login() {
       );
 
       if (res.data.success) {
-        alert("Login successful!");
+        // Success → redirect
+        navigate("/dashboard");
       } else {
         setError(res.data.message || "Invalid credentials");
       }
     } catch (err) {
       setError("Network error. Try again.");
     }
+
+    setLoading(false);
   };
 
   return (
@@ -63,7 +72,13 @@ function Login() {
           onChange={handleChange}
         />
 
-        <button className="auth-btn" onClick={handleLogin}>Login</button>
+         <button
+          className="auth-btn"
+          onClick={handleLogin}
+          disabled={loading}
+        >
+          {loading ? <div className="spinner"></div> : "Login"}
+        </button>
 
         <p className="switch-text">
           Don't have an account? <Link to="/create-account">Create Account</Link>

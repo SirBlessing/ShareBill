@@ -6,6 +6,8 @@ import Contact from "./components/Contact";
 import CreateAccount from "./components/CreateAccount";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
+import CreateBill from "./components/CreateBill";
+import UnlockLink from "./components/UnlockLink";
 function App() {
   return (
     <Router>
@@ -32,6 +34,9 @@ function App() {
           */}
            <Route path="/create-account" element={<CreateAccount />} />
            <Route path="/login" element={<Login />} />
+           <Route path="/create-bill" element={<CreateBill />} />
+           <Route path="/unlock-link" element={<UnlockLink />} />
+
         </Routes>
       </div>
     </Router>
