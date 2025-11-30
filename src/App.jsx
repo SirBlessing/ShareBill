@@ -4,6 +4,7 @@ import HeroSection from "./components/HeroSection";
 import HowItWorks from "./components/HowItWorks";
 import Contact from "./components/Contact";
 import CreateAccount from "./components/CreateAccount";
+import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/how-it-works" element={<HowItWorks />} /> 
           */}
            <Route path="/create-account" element={<CreateAccount />} />
+           <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </Router>

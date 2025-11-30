@@ -1,26 +1,55 @@
 import React from "react";
-
-import howitworkimage from "../assets/images/howitworkimage.png"; // replace with your image
+import contactPhone from "../assets/images/howitworkimage.png"; // your phone image
 
 function Contact() {
   return (
-    <section className="contact-section">
-      <div className="phone-wrapper">
-        <img src={howitworkimage} alt="Phone" className="contact-phone" />
+    <section id="contact" className="contact-section">
 
+      {/* LEFT: PHONE IMAGE */}
+      <div className="contact-left">
+        <img src={contactPhone} alt="phone" className="contact-phone" />
+
+        {/* White icon card */}
+        {/* <div className="contact-card">
+          <div className="card-item">
+            <span className="check">✔</span>
+            <p>Confirm payments</p>
+          </div>
+
+          <div className="card-item">
+            <span className="bell">🔔</span>
+            <p>Send Reminders</p>
+          </div>
+        </div> */}
       </div>
 
+      {/* RIGHT: CONTACT DETAILS */}
       <div className="contact-right">
         <h2>Contact</h2>
 
-        <p><strong>Email:</strong> support@sharebill.com</p>
-        <p><strong>Phone:</strong> +234 800 000 0000</p>
-        <p><strong>Instagram:</strong> @sharebill</p>
+        <ul className="contact-list">
+          <li>
+            📞  
+            +234 706 311 5276 &nbsp;&nbsp; • &nbsp;&nbsp; +234 813 445 7451
+          </li>
 
-        <br />
+          <li>
+            📧  
+            Sharebillcompany@gmail.com
+          </li>
 
-        <p>For partnership, support, or business inquiries, reach out anytime.</p>
+          <li>
+            🌐  
+            Sharebill.com
+          </li>
+
+          <li>
+            📍  
+            Nigeria
+          </li>
+        </ul>
       </div>
+
     </section>
   );
 }

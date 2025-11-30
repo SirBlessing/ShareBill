@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useNavigate,  Link } from "react-router-dom";
 import phone21 from "../assets/images/phone21.png";
 
 function CreateAccount() {
@@ -29,7 +29,7 @@ function CreateAccount() {
           </button>
 
           <p className="login-text">
-            Already have an account? <span>Login Here</span>
+            Already have an account? <span><Link to="/Login">Login Here</Link></span>
           </p>
 
           <p className="terms">
