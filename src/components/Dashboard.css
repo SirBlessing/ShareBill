@@ -1,0 +1,138 @@
+.dashboard-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 30px 40px;
+  background: #12001E;
+  color: white;
+  min-height: 100vh;
+}
+
+/* LEFT PHONES */
+.dashboard-left {
+  display: flex;
+  gap: 5px;
+  margin-top: 80px;
+}
+
+.dash-phone {
+  height: 450px;
+  filter: drop-shadow(0px 0px 8px rgba(0,0,0,0.4));
+}
+
+.phone1 { margin-top: 40px; padding:0px;}
+.phone2 {}
+
+/* RIGHT SIDE */
+.dashboard-right {
+  width: 40%;
+}
+
+.dashboard-title {
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.dash-underline {
+  height: 3px;
+  width: 70px;
+  background: #FF00FF;
+  margin-bottom: 40px;
+}
+
+/* BUTTONS */
+.dash-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.dash-btn {
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+}
+
+.create-btn {
+  background: #FF00FF;
+}
+
+.view-btn {
+  background: #7B00C6;
+}
+
+.remind-btn {
+  background: #4A00FF;
+}
+
+/* BILL HISTORY BOX */
+.bill-history-box {
+  background: white;
+  color: black;
+  padding: 25px;
+  border-radius: 10px;
+  width: 450px;
+}
+
+.bill-history-box h3 {
+  background: #FF00FF;
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 5px;
+  color: white;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.bill-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.bill-item:last-child {
+  border-bottom: none;
+}
+
+.bill-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.bill-amount {
+  font-size: 15px;
+  margin-top: 5px;
+}
+
+.bill-status {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.yellow { background: #FFC300; }
+.green { background: #00D664; }
+
+.view-bill-btn {
+  padding: 8px 14px;
+  background: #FF00FF;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+  

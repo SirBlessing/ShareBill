@@ -32,7 +32,10 @@ body, html {
   font-weight: bold;
  
 }
-
+.logo a{
+  text-decoration: none;
+  color: white;
+}
 .nav-links a {
   margin-left: 20px;
   text-decoration: none;
@@ -531,6 +534,11 @@ input {
   margin: auto;
 }
 
+/* DASHBOARD PAGE */
+
+/* ACTIVE BILLS */
+
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -542,93 +550,7 @@ button:disabled {
   cursor: not-allowed;
 }
 /* UNLUCK LINK */
-.unlock-wrapper {
-  width: 100%;
-  min-height: 100vh;
-  padding: 40px 60px;
-  background: linear-gradient(135deg, #0b001a, #240032);
-  color: white;
-  text-align: center;
-}
 
-.unlock-title {
-  font-size: 40px;
-  font-weight: bold;
-}
-
-.underline {
-  width: 80px;
-  height: 3px;
-  background: #ff00aa;
-  margin: 10px auto 40px auto;
-  border-radius: 2px;
-}
-
-/* Icons row */
-.unlock-icons {
-  display: flex;
-  justify-content: center;
-  margin: 20px auto 50px auto;
-  gap: 40px;
-  flex-wrap: wrap;
-  max-width: 1000px;
-}
-
-.icon-box {
-  width: 220px;
-  text-align: center;
-}
-
-.icon-circle {
-  display: inline-block;
-  width: 45px;
-  height: 45px;
-  background: #ff00aa;
-  border-radius: 50%;
-  color: white;
-  font-size: 20px;
-  line-height: 45px;
-  margin-bottom: 10px;
-}
-
-/* Phones & button area */
-.unlock-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 80px;
-  margin-top: 40px;
-}
-
-.unlock-phone {
-  height: 420px;
-  width: auto;
-}
-
-.unlock-center {
-  text-align: center;
-}
-
-.unlock-btn {
-  background: #ff00aa;
-  padding: 12px 35px;
-  border: none;
-  border-radius: 25px;
-  color: white;
-  font-weight: bold;
-  font-size: 14px;
-  cursor: pointer;
-  margin-bottom: 10px;
-  transition: 0.3s;
-}
-
-.unlock-btn:hover {
-  transform: scale(1.05);
-}
-
-.unlock-note {
-  opacity: 0.8;
-}
 
 /* Responsive Fix */
 @media (max-width: 900px) {

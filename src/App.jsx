@@ -8,6 +8,8 @@ import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import CreateBill from "./components/CreateBill";
 import UnlockLink from "./components/UnlockLink";
+import Dashboard from "./components/Dashboard";
+import ActiveBills from "./components/ActiveBills";
 function App() {
   return (
     <Router>
@@ -36,6 +38,8 @@ function App() {
            <Route path="/login" element={<Login />} />
            <Route path="/create-bill" element={<CreateBill />} />
            <Route path="/unlock-link" element={<UnlockLink />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/ActiveBills" element={<ActiveBills />} />
 
         </Routes>
       </div>

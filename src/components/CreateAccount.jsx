@@ -9,6 +9,7 @@ function CreateAccount() {
   const [form, setForm] = useState({
     fullname: "",
     email: "",
+    phone_number:"",
     password: "",
     confirmPassword: "",
   });
@@ -24,60 +25,68 @@ function CreateAccount() {
   // VALIDATION FIXED HERE
   // -------------------------
   const validate = () => {
-    const { fullname, email, password, confirmPassword } = form;
+  const { fullname, email,phone_number, password, confirmPassword } = form;
 
-    if (!fullname || !email || !password || !confirmPassword) {
-      setError("All fields are required.");
-      return false;
+  if (!fullname || !email|| !phone_number || !password || !confirmPassword) {
+    setError("All fields are required.");
+    return false;
+  }
+
+  // Basic email / phone validation
+  const emailRegex = /\S+@\S+\.\S+/;
+  const phoneRegex = /^[0-9]{10,15}$/;
+
+  if (!emailRegex.test(email) && !phoneRegex.test(email)) {
+    setError("Enter a valid email or phone number.");
+    return false;
+  }
+
+  if (password.length < 6) {
+    setError("Password must be at least 6 characters.");
+    return false;
+  }
+
+  if (password !== confirmPassword) {
+    setError("Passwords do not match.");
+    return false;
+  }
+
+  return true;
+};
+
+
+ const handleCreate = async (e) => {
+  e.preventDefault();
+  if (!validate()) return;
+
+  setLoading(true);
+  setError("");
+
+  try {
+    const res = await axios.post("http://localhost:5000/auth/register", {
+      fullname: form.fullname,
+     email: form.email,
+      phone_number: form.phone_number,
+      password: form.password,
+    });
+
+    if (res.data.success) {
+      navigate("/login");
+    } else {
+      setError(res.data.message || "Signup failed.");
     }
+ } catch (err) {
+  if (err.response) {
+    setError(err.response.data.message || "Signup error");
+  } else {
+    setError("Network error. Try again.");
+  }
+}
 
-    // Basic email / phone validation
-    const emailRegex = /\S+@\S+\.\S+/;
-    const phoneRegex = /^[0-9]{10,15}$/;
 
-    if (!emailRegex.test(email) && !phoneRegex.test(email)) {
-      setError("Enter a valid email or phone number.");
-      return false;
-    }
+  setLoading(false);
+};
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
-      return false;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleCreate = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-
-    setLoading(true);
-    setError("");
-
-    try {
-      const res = await axios.post("https://YOUR_BACKEND_URL/signup", {
-        fullname: form.fullname,
-        email: form.email,
-        password: form.password,
-      });
-
-      if (res.data.success) {
-        navigate("/login"); // Redirect after signup success
-      } else {
-        setError(res.data.message || "Signup failed.");
-      }
-    } catch (err) {
-      setError("Network error. Try again.");
-    }
-
-    setLoading(false);
-  };
 
   return (
     <div className="create-account-container">
@@ -98,14 +107,20 @@ function CreateAccount() {
             onChange={handleChange}
           />
 
-          <label>Email / Phone</label>
+          <label>Email</label>
           <input
             name="email"
             type="text"
-            placeholder="Enter email or phone"
+            placeholder="Enter your email "
             onChange={handleChange}
           />
-
+            <label>Phone</label>
+          <input
+            name="phone_number"
+            type="text"
+            placeholder="Enter  phone number"
+            onChange={handleChange}
+          />
           <label>Password</label>
           <input
             name="password"

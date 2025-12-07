@@ -30,7 +30,7 @@ function Login() {
 
     try {
       const res = await axios.post(
-        "https://YOUR_BACKEND_URL/login",
+        "http://localhost:5000/auth/login",
         form
       );
 
@@ -41,8 +41,13 @@ function Login() {
         setError(res.data.message || "Invalid credentials");
       }
     } catch (err) {
-      setError("Network error. Try again.");
-    }
+  if (err.response) {
+    setError(err.response.data.message || "Invalid credentials");
+  } else {
+    setError("Network error. Try again.");
+  }
+}
+
 
     setLoading(false);
   };
@@ -60,7 +65,7 @@ function Login() {
         <input
           name="email"
           type="text"
-          placeholder="Input email/phone"
+          placeholder="Input email or phone"
           onChange={handleChange}
         />
 

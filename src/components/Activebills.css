@@ -1,0 +1,137 @@
+.active-container {
+  display: flex;
+  padding: 40px;
+  background: #160022;
+  color: #fff;
+  min-height: 100vh;
+}
+
+/* LEFT IMAGES */
+.active-left {
+  flex: 1;
+  position: relative;
+}
+
+.phone {
+  width: 260px;
+  height: 500px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 40px;
+  border: 6px solid black;
+  position: absolute;
+}
+
+.phone-1 {
+  background-image: url("/images/phone1.jpg");
+  top: 50px;
+  left: 40px;
+}
+
+.phone-2 {
+  background-image: url("/images/phone2.jpg");
+  top: 120px;
+  left: 180px;
+}
+
+/* RIGHT SIDE */
+.active-right {
+  flex: 1;
+  margin-left: 120px;
+}
+
+.active-title {
+  font-size: 45px;
+  font-weight: 700;
+}
+
+.underline {
+  width: 80px;
+  height: 4px;
+  background: #ff00ff;
+  margin: 10px 0 30px;
+}
+
+.back-btn {
+  background: #b300ff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: white;
+  font-size: 14px;
+}
+
+.remind-btn {
+  background: #ff00ff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  margin-top: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* BILL BOX */
+.active-bills-box {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 420px;
+  margin-top: 25px;
+  color: black;
+}
+
+.box-title {
+  background: #ff00ff;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  width: fit-content;
+  margin-bottom: 15px;
+}
+
+.bill-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.bill-item:last-child {
+  border-bottom: none;
+}
+
+.bill-title {
+  font-weight: 600;
+}
+
+.bill-amount {
+  font-size: 14px;
+}
+
+.bill-status {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  background: yellow;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.view-btn {
+  background: #b300ff;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
