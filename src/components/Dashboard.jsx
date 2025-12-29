@@ -1,8 +1,42 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import phone21 from "../assets/images/phone21.png";
-import "./Dashboard.css"
+import "./Dashboard.css";
+
 function Dashboard() {
+  const [bills, setBills] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchBills = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await axios.get(
+          "http://localhost:5000/bills/my-bills",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setBills(res.data);
+      } catch (err) {
+        console.error(err);
+        if (err.response?.status === 401) {
+          navigate("/login");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBills();
+  }, [navigate]);
+
   return (
     <div className="dashboard-wrapper">
 
@@ -19,57 +53,56 @@ function Dashboard() {
 
         {/* BUTTONS */}
         <div className="dash-buttons">
-          <Link to="/create-bill" className="dash-btn create-btn">+ Create New Bill</Link>
-          <Link to="/ActiveBills" className="dash-btn view-btn">View Active Bills</Link>
-          <button className="dash-btn remind-btn">Remind Participants</button>
+          <Link to="/create-bill" className="dash-btn create-btn">
+            + Create New Bill
+          </Link>
+          <Link to="/ActiveBills" className="dash-btn view-btn">
+            View Active Bills
+          </Link>
+          <button className="dash-btn remind-btn">
+            Remind Participants
+          </button>
         </div>
 
         {/* BILL HISTORY */}
         <div className="bill-history-box">
           <h3>Bill History</h3>
 
-          <div className="bill-item">
-            <div className="bill-info">
-              <p className="bill-title">Monthly Rent</p>
-              <p className="bill-amount">$52,000</p>
-            </div>
+          {loading && <p>Loading bills...</p>}
 
-            <div className="bill-status">
-              <span className="status-dot yellow"></span> In progress
-            </div>
+          {!loading && bills.length === 0 && (
+            <p>No bills yet. Create your first bill 👋</p>
+          )}
 
-            <button className="view-bill-btn">View this Bill</button>
-          </div>
+          {!loading &&
+            bills.map((bill) => (
+              <div className="bill-item" key={bill.id}>
+                <div className="bill-info">
+                  <p className="bill-title">{bill.title}</p>
+                  <p className="bill-amount">
+                    ₦{Number(bill.total_amount).toLocaleString()}
+                  </p>
+                </div>
 
-          <div className="bill-item">
-            <div className="bill-info">
-              <p className="bill-title">Netflix Subscription</p>
-              <p className="bill-amount">$15,000</p>
-            </div>
+                <div className="bill-status">
+                  <span
+                    className={`status-dot ${
+                      bill.status === "completed" ? "green" : "yellow"
+                    }`}
+                  ></span>
+                  {bill.status === "completed" ? "Completed" : "In progress"}
+                </div>
 
-            <div className="bill-status">
-              <span className="status-dot yellow"></span> In progress
-            </div>
-
-            <button className="view-bill-btn">View this Bill</button>
-          </div>
-
-          <div className="bill-item">
-            <div className="bill-info">
-              <p className="bill-title">Movie Night</p>
-              <p className="bill-amount">$18,000</p>
-            </div>
-
-            <div className="bill-status">
-              <span className="status-dot green"></span> Completed
-            </div>
-
-            <button className="view-bill-btn">View this Bill</button>
-          </div>
-
+                <button
+                  className="view-bill-btn"
+                  onClick={() => navigate(`/bill/${bill.id}`)}
+                >
+                  View this Bill
+                </button>
+              </div>
+            ))}
         </div>
       </div>
-
     </div>
   );
 }

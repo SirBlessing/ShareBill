@@ -34,10 +34,11 @@ function Login() {
         form
       );
 
-      if (res.data.success) {
-        // Success → redirect
-        navigate("/dashboard");
-      } else {
+     if (res.data.success) {
+  localStorage.setItem("token", res.data.token);
+  navigate("/dashboard");
+}
+ else {
         setError(res.data.message || "Invalid credentials");
       }
     } catch (err) {

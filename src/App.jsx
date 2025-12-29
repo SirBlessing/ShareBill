@@ -10,6 +10,7 @@ import CreateBill from "./components/CreateBill";
 import UnlockLink from "./components/UnlockLink";
 import Dashboard from "./components/Dashboard";
 import ActiveBills from "./components/ActiveBills";
+import BillDashboard from "./components/BillDashboard";
 function App() {
   return (
     <Router>
@@ -40,6 +41,8 @@ function App() {
            <Route path="/unlock-link" element={<UnlockLink />} />
             <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/ActiveBills" element={<ActiveBills />} />
+              <Route path="/bill/:id" element={<BillDashboard />} />
+
 
         </Routes>
       </div>

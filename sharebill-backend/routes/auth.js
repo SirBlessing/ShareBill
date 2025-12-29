@@ -5,6 +5,7 @@ const { body, validationResult } = require("express-validator");
 const pool = require("../db");
 require("dotenv").config();
 
+
 const router = express.Router();
 const SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS || "10", 10);
 
@@ -102,6 +103,7 @@ router.post(
     }
   }
 );
+
 
 
 module.exports = router;
