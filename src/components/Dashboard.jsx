@@ -59,9 +59,9 @@ function Dashboard() {
           <Link to="/ActiveBills" className="dash-btn view-btn">
             View Active Bills
           </Link>
-          <button className="dash-btn remind-btn">
+          {/* <button className="dash-btn remind-btn">
             Remind Participants
-          </button>
+          </button> */}
         </div>
 
         {/* BILL HISTORY */}

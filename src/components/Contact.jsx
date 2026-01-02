@@ -30,7 +30,7 @@ function Contact() {
         <ul className="contact-list">
           <li>
             📞  
-            +234 706 311 5276 &nbsp;&nbsp; • &nbsp;&nbsp; +234 813 445 7451
+            +234 706 311 5275 &nbsp;&nbsp; • &nbsp;&nbsp; +234 813 445 7451
           </li>
 
           <li>

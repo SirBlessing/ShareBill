@@ -43,49 +43,45 @@ const CreateBill = () => {
   };
 
   // 🔥 CREATE BILL (CONNECTS TO BACKEND)
-  const handleCreateBill = async () => {
-    if (!title || !totalAmount || !accountName || !accountNumber || !bankName) {
-      setError("Please fill all required fields");
-      return;
+ const handleSubmit = async () => {
+  const token = localStorage.getItem("token");
+
+  let finalParticipants = [...participants];
+
+  if (equalSplit) {
+    const splitAmount = Number(billAmount) / participants.length;
+
+    finalParticipants = participants.map((p) => ({
+      ...p,
+      amount: splitAmount,
+      status: "pending",
+    }));
+  } else {
+    finalParticipants = participants.map((p) => ({
+      ...p,
+      status: "pending",
+    }));
+  }
+
+  await axios.post(
+    "http://localhost:5000/bills/create",
+    {
+      title: billName,
+      total_amount: billAmount,
+      account_name,
+      account_number,
+      bank_name,
+      equalSplit,
+      participants: finalParticipants,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
+  );
+};
 
-    setLoading(true);
-    setError("");
-
-    try {
-      const payload = {
-        title,
-        total_amount: totalAmount,
-        description,
-        due_date: dueDate,
-        account_name: accountName,
-        account_number: accountNumber,
-        bank_name: bankName,
-        equalSplit,
-        participants,
-      };
-
-      const token = localStorage.getItem("token");
-
-      const res = await axios.post(
-        "http://localhost:5000/bills/create",
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (res.data.success) {
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || "Failed to create bill");
-    }
-
-    setLoading(false);
-  };
 
   return (
     <div className="createbill-page">

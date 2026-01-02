@@ -12,6 +12,15 @@ const BillDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+const participantCount = participants.length;
+
+const yourShare =
+  participantCount > 0
+    ? Number(bill.total_amount) / participantCount
+    : 0;
+
+
+
   useEffect(() => {
     const fetchBill = async () => {
       try {
@@ -65,7 +74,15 @@ const BillDashboard = () => {
           <h3>Creator View</h3>
           <p><strong>Bill Name:</strong> {bill.title}</p>
           <p><strong>Bill Amount:</strong> ₦{Number(bill.total_amount).toLocaleString()}</p>
-          <p><strong>Your share:</strong> —</p>
+          {/* <p><strong>Your share:</strong> —</p> */}
+          <p>
+  <strong>Your Share:</strong>{" "}
+  ₦{yourShare.toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  })}
+</p>
+
           <p><strong>Number of Participants:</strong> {participants.length}</p>
 
           <small>This page is only visible to the bill creator</small>
