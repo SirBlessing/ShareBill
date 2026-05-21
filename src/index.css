@@ -1,4 +1,4 @@
-:root {
+/* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
  
 }
@@ -11,4 +11,53 @@ body {
 }
 
 
+ */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
 
+:root {
+  font-family: 'DM Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #07000F;
+  overflow-x: hidden;
+}
+
+/*
+  ── GLOBAL NAVBAR OFFSET ──────────────────────
+  The navbar is position:fixed at ~72px height.
+  Every inner page EXCEPT the home page (which
+  handles its own hero padding) and the participant
+  page (/pay/*) needs this top offset.
+
+  Applied via a utility class .nav-offset that
+  each page wrapper uses.  For pages we can't
+  easily change right now, we target their known
+  root class names directly below.
+──────────────────────────────────────────────── */
+.nav-offset { padding-top: 72px; }
+
+/* Pages that already set their own padding ──── */
+/* auth-page, cb-page, ab-page already have
+   80px+ top padding inside their panels, so the
+   fixed navbar (72px) is already cleared.
+   Only the auth-page outermost div needs a tweak
+   if the form starts too high — handled via
+   padding-top on auth-form-side (80px). */
+
+/* Catch-all: any page whose top content
+   starts too close to the screen edge */
+.createbill-page,
+.active-container,
+.dashboard-wrapper {
+  padding-top: 72px;
+}
+
+/* The new component-CSS pages handle it themselves */
+.dash-page,
+.ab-page,
+.cb-page,
+.auth-page { /* each has its own padding-top */ }

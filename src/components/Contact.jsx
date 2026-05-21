@@ -1,57 +1,49 @@
 import React from "react";
-import contactPhone from "../assets/images/howitworkimage.png"; // your phone image
+import { Link } from "react-router-dom";
 
-function Contact() {
+const contactItems = [
+  { icon: "📞", label: "+234 706 311 5275" },
+  { icon: "📧", label: "Sharebillcompany@gmail.com" },
+  { icon: "🌐", label: "Sharebill.com" },
+  { icon: "📍", label: "Nigeria" },
+];
+
+export default function Contact() {
   return (
-    <section id="contact" className="contact-section">
+    <section id="contact" className="cta-section">
+      <div className="cta-card">
+        <div className="section-tag" style={{ margin: "0 auto 24px" }}>
+          🚀 Get Started
+        </div>
 
-      {/* LEFT: PHONE IMAGE */}
-      <div className="contact-left">
-        <img src={contactPhone} alt="phone" className="contact-phone" />
+        <h2 className="cta-title">
+          Ready to collect your<br />
+          <span className="grad-text">money without the stress?</span>
+        </h2>
 
-        {/* White icon card */}
-        {/* <div className="contact-card">
-          <div className="card-item">
-            <span className="check">✔</span>
-            <p>Confirm payments</p>
-          </div>
+        <p className="cta-sub">
+          Create your first bill in under 2 minutes.
+          Free forever. No credit card. No hidden fees.
+        </p>
 
-          <div className="card-item">
-            <span className="bell">🔔</span>
-            <p>Send Reminders</p>
-          </div>
-        </div> */}
+        <div className="cta-buttons">
+          <Link to="/create-account" className="btn-primary" style={{ fontSize: 16, padding: "16px 36px" }}>
+            Create a Free Bill →
+          </Link>
+          <Link to="/login" className="btn-outline">
+            I already have an account
+          </Link>
+        </div>
+
+        <div className="cta-contact-row">
+          {contactItems.map((c, i) => (
+            <div className="cta-contact-item" key={i}>
+              <div className="cta-contact-icon">{c.icon}</div>
+              <span>{c.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
-
-      {/* RIGHT: CONTACT DETAILS */}
-      <div className="contact-right">
-        <h2>Contact</h2>
-
-        <ul className="contact-list">
-          <li>
-            📞  
-            +234 706 311 5275 &nbsp;&nbsp; • &nbsp;&nbsp; +234 813 445 7451
-          </li>
-
-          <li>
-            📧  
-            Sharebillcompany@gmail.com
-          </li>
-
-          <li>
-            🌐  
-            Sharebill.com
-          </li>
-
-          <li>
-            📍  
-            Nigeria
-          </li>
-        </ul>
-      </div>
-
     </section>
   );
 }
-
-export default Contact;

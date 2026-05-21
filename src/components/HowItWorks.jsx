@@ -1,66 +1,69 @@
 import React from "react";
 
-// import phoneImg from "../assets/howitworks-phone.png"; 
-// import confirmIcon from "../assets/confirm.png";
-// import reminderIcon from "../assets/reminder.png";
+const steps = [
+  {
+    num: 1,
+    numClass: "hiw-num-1",
+    emoji: "📝",
+    title: "Create a Bill",
+    desc: "Enter the bill name, total amount, and your bank account details.",
+  },
+  {
+    num: 2,
+    numClass: "hiw-num-2",
+    emoji: "👥",
+    title: "Add Participants",
+    desc: "Add everyone's name, WhatsApp number, and their share of the bill.",
+  },
+  {
+    num: 3,
+    numClass: "hiw-num-3",
+    emoji: "💬",
+    title: "Share the Link",
+    desc: "Watch a quick ad to unlock WhatsApp links. Send each person their unique payment link.",
+  },
+  {
+    num: 4,
+    numClass: "hiw-num-4",
+    emoji: "📸",
+    title: "They Pay & Upload",
+    desc: "Participants open the link, transfer their share, and upload a receipt photo.",
+  },
+  {
+    num: 5,
+    numClass: "hiw-num-5",
+    emoji: "✅",
+    title: "You Confirm",
+    desc: "Review receipts in your dashboard and mark each payment confirmed. Done.",
+  },
+];
 
-import howitworkimage from "../assets/images/howitworkimage.png";
 export default function HowItWorks() {
   return (
-    <div id="how-it-works" className="how-container">
-
-      {/* LEFT IMAGE SIDE */}
-      <div className="how-left">
-        <div className="phone-wrapper">
-          {/* <img src={phoneImg} alt="phone" className="phone-img" />
-
-          <div className="badge-box">
-            <div className="badge">
-              <img src={confirmIcon} alt="confirm" />
-              <p>Confirm payments</p>
-            </div>
-
-            <div className="badge">
-              <img src={reminderIcon} alt="remind" />
-              <p>Send Reminders</p>
-            </div>
-          </div> */}
-            <img src={howitworkimage} alt="how it works" />
-        </div>
+    <section id="how-it-works" className="hiw-section">
+      <div className="hiw-head">
+        <div className="section-tag">⚡ Simple Process</div>
+        <h2 className="section-heading">
+          From zero to collected<br />
+          <span className="grad-text">in under 5 minutes</span>
+        </h2>
+        <p className="section-sub" style={{ margin: "0 auto" }}>
+          No complicated setup. No app installs for your participants.
+          Just a link, a transfer, and a confirmation.
+        </p>
       </div>
 
-      {/* RIGHT CONTENT SIDE */}
-      <div className="how-right">
-        <h2>How it works</h2>
-
-        <ul>
-          <li><strong>STEP 1:</strong> Create a Bill</li>
-          <li>Enter Bill Name</li>
-          <li>Enter Bill Amount</li>
-          <li>Enter Participants</li>
-          <li>Insert Account Details</li>
-          <li>Press Share</li>
-
-          <li><strong>STEP 2:</strong> Unlock WhatsApp Link</li>
-          <li>Watch a small rewarded ad to unlock your WhatsApp link</li>
-
-          <li><strong>STEP 3:</strong> Send Bill Link</li>
-          <li>Share the unique link with your participants</li>
-
-          <li><strong>STEP 4:</strong> Participants open the Link</li>
-          <li>Make their payment, upload receipt</li>
-
-          <li><strong>STEP 5:</strong> Confirm Payment</li>
-          <li>You confirm their payment</li>
-          <li>Status turns green</li>
-        </ul>
-
-        <div className="extra-tips">
-          <p><strong>Extra Tips:</strong></p>
-          <p>• Watch ads to enable WhatsApp reminders for late payments</p>
-        </div>
+      <div className="hiw-steps">
+        {steps.map((s) => (
+          <div className="hiw-step" key={s.num}>
+            <div className={`hiw-num ${s.numClass}`}>
+              <span className="hiw-emoji">{s.emoji}</span>
+            </div>
+            <div className="hiw-step-title">{s.title}</div>
+            <div className="hiw-step-desc">{s.desc}</div>
+          </div>
+        ))}
       </div>
-
-    </div>
+    </section>
   );
 }
