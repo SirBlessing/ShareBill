@@ -442,3 +442,28 @@
   .cb-preview-panel    { display: none; }
   .cb-form-panel       { padding: 100px 28px 60px; }
 }
+
+/* ═══ MOBILE ADDITIONS ══════════════════════════════════════ */
+@media (max-width:960px) {
+  .cb-page{grid-template-columns:1fr}
+  .cb-preview-panel{display:none}
+  .cb-form-panel{padding:88px 28px 64px}
+}
+@media (max-width:600px) {
+  .cb-form-panel{padding:80px 20px 56px}
+  .cb-form-title{font-size:26px}
+  .cb-row-2{grid-template-columns:1fr}
+  .cb-p-row{grid-template-columns:1fr 1fr;gap:7px}
+  .cb-p-row.with-amount{grid-template-columns:1fr 1fr;gap:7px}
+  .cb-p-row.with-amount .cb-field:nth-child(3){grid-column:1/-1}
+  .cb-p-row .cb-remove-btn{grid-column:2;justify-self:end;align-self:center}
+  .cb-field input{font-size:14px;padding:11px 13px}
+  .cb-submit-btn{font-size:15px;padding:15px}
+  .cb-split-header{flex-direction:row;align-items:center}
+}
+@media (max-width:480px) {
+  .cb-form-panel{padding:76px 16px 48px}
+  .cb-form-title{font-size:24px;gap:8px}
+  .cb-plus{width:30px;height:30px;font-size:17px;border-radius:8px}
+  .cb-section-title{font-size:10px}
+}

@@ -1,63 +1,51 @@
-/* :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
- 
-}
-
-
-
-body {
-  margin: 0;
-  background: linear-gradient(135deg, #0b001a, #240032);
-}
-
-
- */
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
 
-:root {
-  font-family: 'DM Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
+:root { font-family: 'DM Sans', system-ui, sans-serif; }
 *, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: #07000F; overflow-x: hidden; }
+html { -webkit-text-size-adjust: 100%; }       /* prevent iOS font inflation */
 
-body {
-  margin: 0;
-  background: #07000F;
-  overflow-x: hidden;
+/* Spinner shared across all pages */
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: global-spin .7s linear infinite;
+  display: inline-block;
+}
+@keyframes global-spin { to { transform: rotate(360deg); } }
+
+button:disabled { opacity: .6; cursor: not-allowed; }
+
+/* Error box shared */
+.error-text {
+  background: rgba(255,50,50,.1);
+  border-left: 3px solid #f87171;
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-size: 13px;
+  color: #fca5a5;
+  margin-bottom: 16px;
 }
 
 /*
-  ── GLOBAL NAVBAR OFFSET ──────────────────────
-  The navbar is position:fixed at ~72px height.
-  Every inner page EXCEPT the home page (which
-  handles its own hero padding) and the participant
-  page (/pay/*) needs this top offset.
-
-  Applied via a utility class .nav-offset that
-  each page wrapper uses.  For pages we can't
-  easily change right now, we target their known
-  root class names directly below.
-──────────────────────────────────────────────── */
-.nav-offset { padding-top: 72px; }
-
-/* Pages that already set their own padding ──── */
-/* auth-page, cb-page, ab-page already have
-   80px+ top padding inside their panels, so the
-   fixed navbar (72px) is already cleared.
-   Only the auth-page outermost div needs a tweak
-   if the form starts too high — handled via
-   padding-top on auth-form-side (80px). */
-
-/* Catch-all: any page whose top content
-   starts too close to the screen edge */
-.createbill-page,
-.active-container,
-.dashboard-wrapper {
-  padding-top: 72px;
-}
-
-/* The new component-CSS pages handle it themselves */
+  GLOBAL NAVBAR OFFSET
+  The fixed navbar is ~72px tall.
+  All inner-app page wrappers get this padding-top.
+  Home page handles its own hero padding separately.
+*/
 .dash-page,
 .ab-page,
 .cb-page,
-.auth-page { /* each has its own padding-top */ }
+.auth-page,
+.bill-dashboard-page,
+.unlock-wrapper {
+  padding-top: 72px;
+}
+
+/* touch targets: every button/link at least 44px tall */
+@media (max-width: 768px) {
+  button, a { min-height: 36px; }
+  input, select, textarea { font-size: 16px !important; } /* stops iOS zoom on focus */
+}

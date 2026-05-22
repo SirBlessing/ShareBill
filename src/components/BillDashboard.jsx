@@ -231,75 +231,50 @@ const BillDashboard = () => {
               </tr>
             </thead>
 
-            <tbody>
-              {participants.map((p, i) => {
-                const status = p.status || "pending";
-                const isUpdating = actionLoading === i;
+         {/* Replace the <tbody> section in BillDashboard.jsx with this */}
+{/* Find the <tbody> block and replace it with: */}
 
-                return (
-                  <tr key={i}>
-                    <td>{p.name}</td>
-                    <td>
-                      ₦{Number(p.amount || 0).toLocaleString(undefined, {
-                        maximumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>
-                      <span className={`status-badge ${status}`}>
-                        <span className="status-dot"></span>
-                        {status === "awaiting" ? "Awaiting" : status.charAt(0).toUpperCase() + status.slice(1)}
-                      </span>
-                    </td>
-                    <td>
-                      {p.receipt ? (
-                        <button
-                          className="view-receipt-btn"
-                          onClick={() => setReceiptModal(p.receipt)}
-                        >
-                          View 🧾
-                        </button>
-                      ) : (
-                        <span style={{ opacity: 0.4, fontSize: 12 }}>None</span>
-                      )}
-                    </td>
-                    <td>
-                      {isUpdating ? (
-                        <div className="spinner" style={{ margin: "0 auto" }}></div>
-                      ) : status === "paid" ? (
-                        <button
-                          className="undo-btn"
-                          onClick={() => handleStatusChange(i, "pending")}
-                        >
-                          Undo
-                        </button>
-                      ) : status === "awaiting" ? (
-                        <button
-                          className="paid-btn"
-                          onClick={() => handleStatusChange(i, "paid")}
-                        >
-                          ✓ Confirm
-                        </button>
-                      ) : (
-                        <button
-                          className="paid-btn"
-                          onClick={() => handleStatusChange(i, "paid")}
-                        >
-                          Mark Paid
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
+{/* Replace the <tbody> section in BillDashboard.jsx with this */}
+{/* Find the <tbody> block and replace it with: */}
 
-              {participants.length === 0 && (
-                <tr>
-                  <td colSpan={5} style={{ textAlign: "center", opacity: 0.5 }}>
-                    No participants found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
+<tbody>
+  {participants.map((p, i) => {
+    const status = p.status || "pending";
+    const isUpdating = actionLoading === i;
+    return (
+      <tr key={i}>
+        <td data-label="Name">{p.name}</td>
+        <td data-label="Amount">
+          ₦{Number(p.amount || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+        </td>
+        <td data-label="Status">
+          <span className={`status-badge ${status}`}>
+            <span className="status-dot"></span>
+            {status === "awaiting" ? "Awaiting" : status.charAt(0).toUpperCase() + status.slice(1)}
+          </span>
+        </td>
+        <td data-label="Receipt">
+          {p.receipt ? (
+            <button className="view-receipt-btn" onClick={() => setReceiptModal(p.receipt)}>View 🧾</button>
+          ) : (
+            <span style={{ opacity: 0.4, fontSize: 12 }}>None</span>
+          )}
+        </td>
+        <td data-label="Action">
+          {isUpdating ? (
+            <div className="spinner" style={{ margin: "0 auto" }}></div>
+          ) : status === "paid" ? (
+            <button className="undo-btn" onClick={() => handleStatusChange(i, "pending")}>Undo</button>
+          ) : status === "awaiting" ? (
+            <button className="paid-btn" onClick={() => handleStatusChange(i, "paid")}>✓ Confirm</button>
+          ) : (
+            <button className="paid-btn" onClick={() => handleStatusChange(i, "paid")}>Mark Paid</button>
+          )}
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
           </table>
         </div>
       </div>
