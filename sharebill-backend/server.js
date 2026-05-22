@@ -9,7 +9,10 @@ const app = express();
    Must come BEFORE routes so body-parsing
    and CORS headers are applied to every req.
 ─────────────────────────────────────────── */
-app.use(cors());
+app.use(cors({
+  origin: process.env.https://sharebillng.netlify.app || "http://localhost:5173", // Fallback to local Vite port
+  credentials: true
+}));
 app.use(express.json({ limit: "10mb" }));   // 10 mb covers base64 receipt images
 app.use(express.urlencoded({ extended: true }));
 
