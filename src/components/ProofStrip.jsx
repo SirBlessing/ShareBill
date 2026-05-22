@@ -1,7 +1,7 @@
 import React from "react";
 
 const items = [
-  { icon: "🧾", num: "5,000+",  label: "Bills Created" },
+  { icon: "🧾", num: "5,000+",  label: "Bill Created" },
   { icon: "💸", num: "₦50M+",   label: "Tracked So Far" },
   { icon: "👥", num: "20,000+", label: "Participants" },
   { icon: "⚡", num: "< 2 min", label: "To Create a Bill" },
