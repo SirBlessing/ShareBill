@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./ActiveBills.css";
 
-const API = "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 const BILL_ICONS = ["🍽️","🎉","✈️","🏠","🎂","⚽","🎬","🛒","🎵","💼"];
 const getBillIcon = (title = "") => BILL_ICONS[title.charCodeAt(0) % BILL_ICONS.length];

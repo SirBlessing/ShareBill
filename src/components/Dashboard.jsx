@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Dashboard.css";
 
-const API = "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 const BILL_ICONS = ["🍽️","🎉","✈️","🏠","🎂","⚽","🎬","🛒","💼","🎵"];
 const icon = (t = "") => BILL_ICONS[t.charCodeAt(0) % BILL_ICONS.length];
