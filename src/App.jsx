@@ -4,7 +4,7 @@ import "./Home.css";
 
 import Navbar       from "./components/Navbar";
 import HeroSection  from "./components/HeroSection";
-import Proofstrip   from "./components/Proofstrip";
+import ProofStrip   from "./components/ProofStrip";
 import HowItWorks   from "./components/HowItWorks";
 import Features     from "./components/Features";
 import Testimonials from "./components/Testimonials";
