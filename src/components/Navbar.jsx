@@ -27,19 +27,28 @@ export default function Navbar() {
   }, []);
 
   /* read auth whenever storage changes */
+    /* read auth whenever storage changes */
   useEffect(() => {
     function readAuth() {
       const token = localStorage.getItem("token");
       if (!token) { setUser(null); return; }
       const p = decodeToken(token);
       if (!p) { setUser(null); return; }
-      const name = p.fullname || p.name || "User";
+      // Fallback options to match whatever your JWT payloads uses
+      const name = p.fullname || p.name || p.username || "User";
       setUser({ name, initials: getInitials(name) });
     }
     readAuth();
+    
     window.addEventListener("storage", readAuth);
-    return () => window.removeEventListener("storage", readAuth);
+    window.addEventListener("authChange", readAuth); // Add this line
+    
+    return () => {
+      window.removeEventListener("storage", readAuth);
+      window.removeEventListener("authChange", readAuth); // Add this line
+    };
   }, []);
+
 
   /* close dropdown on outside click */
   useEffect(() => {

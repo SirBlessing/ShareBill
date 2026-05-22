@@ -101,10 +101,13 @@ function Login() {
     setLoading(true); setError("");
     try {
       const res = await axios.post(`${API_BASE_URL}/auth/login`, form);
-      if (res.data.success) {
+            if (res.data.success) {
         localStorage.setItem("token", res.data.token);
+        // Dispatch the custom event so the Navbar updates instantly
+        window.dispatchEvent(new Event("authChange")); 
         navigate("/dashboard");
-      } else {
+      }
+ else {
         setError(res.data.message || "Invalid credentials");
       }
     } catch (err) {
