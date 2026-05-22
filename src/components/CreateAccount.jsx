@@ -69,6 +69,9 @@ function RegisterIllustration() {
 /* ══════════════════════════════════════════
    CREATE ACCOUNT PAGE
 ══════════════════════════════════════════ */
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+
 function CreateAccount() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -97,7 +100,7 @@ function CreateAccount() {
     if (!validate()) return;
     setLoading(true); setError("");
     try {
-      const res = await axios.post("http://localhost:5000/auth/register", {
+      const res = await axios.post(`${API_BASE_URL}/auth/login`, {
         fullname: form.fullname,
         email: form.email,
         phone_number: form.phone_number,
