@@ -100,7 +100,7 @@ function CreateAccount() {
     if (!validate()) return;
     setLoading(true); setError("");
     try {
-      const res = await axios.post(`${API_BASE_URL}/auth/login`, {
+      const res = await axios.post(`${API_BASE_URL}/auth/register`, {
         fullname: form.fullname,
         email: form.email,
         phone_number: form.phone_number,
