@@ -85,6 +85,9 @@ function LoginIllustration() {
 /* ══════════════════════════════════════════
    LOGIN PAGE
 ══════════════════════════════════════════ */
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+ 
 function Login() {
   const navigate = useNavigate();
   const [form,    setForm]    = useState({ email: "", password: "" });
@@ -97,7 +100,7 @@ function Login() {
     if (!form.email || !form.password) { setError("All fields are required."); return; }
     setLoading(true); setError("");
     try {
-      const res = await axios.post("http://localhost:5000/auth/login", form);
+      const res = await axios.post(`${API_BASE_URL}/auth/login`, form);
       if (res.data.success) {
         localStorage.setItem("token", res.data.token);
         navigate("/dashboard");
