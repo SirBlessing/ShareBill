@@ -505,3 +505,191 @@ th {
   /* receipt modal */
   .receipt-modal{padding:14px;border-radius:12px}
 }
+
+
+
+
+
+/* PAGE BACKGROUND */
+.bill-dashboard-page {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #2b0033, #0a0012);
+  color: #fff;
+  padding: 80px 60px 0;
+  box-sizing: border-box;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+/* TOP LAYOUT */
+.bill-dashboard-top { display: flex; justify-content: space-between; gap: 60px; }
+
+/* LEFT SUMMARY */
+.bill-summary { width: 35%; }
+.page-title { font-size: 34px; margin-bottom: 28px; font-family: 'Syne', sans-serif; font-weight: 800; }
+
+.summary-box { background: rgba(255,255,255,.05); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
+.summary-box h3 { margin-bottom: 12px; font-size: 15px; }
+.summary-box p { margin: 7px 0; font-size: 14px; }
+.summary-box small { display: block; margin-top: 10px; opacity: .6; font-size: 12px; }
+
+.remind-btn { background: linear-gradient(90deg,#ff00cc,#ff6a00); border: none; color: white;
+  padding: 12px 20px; border-radius: 30px; cursor: pointer; font-size: 14px; width: 100%; margin-bottom: 12px; }
+
+/* RIGHT TABLE */
+.payment-status { width: 60%; }
+.payment-status h2 { margin-bottom: 16px; font-size: 20px; }
+
+/* Scroll wrapper keeps table accessible on mid-size screens */
+.table-scroll-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 10px; }
+
+table { width: 100%; border-collapse: collapse; min-width: 500px; }
+th, td { border: 1px solid rgba(255,255,255,.18); padding: 13px 14px; text-align: center; font-size: 14px; }
+th { font-weight: 600; background: rgba(255,255,255,.04); }
+
+/* STATUS */
+.status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px;
+  border-radius: 20px; font-size: 12px; font-weight: 500; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.status-badge.pending  { background: rgba(255,0,0,.12);    color: #ff4d4d; }
+.status-badge.awaiting { background: rgba(255,193,7,.12);  color: #ffc107; }
+.status-badge.paid     { background: rgba(0,200,83,.12);   color: #00c853; }
+
+/* ACTION BUTTONS */
+.paid-btn { background: linear-gradient(90deg,#ff00cc,#ff6a00); border: none;
+  padding: 6px 14px; border-radius: 20px; color: white; cursor: pointer; font-size: 13px; }
+.undo-btn { background: #ff2d2d; border: none; padding: 6px 14px; border-radius: 20px; color: white; cursor: pointer; font-size: 13px; }
+
+/* RECEIPT BUTTON */
+.view-receipt-btn { background: rgba(255,0,212,.12); border: 1px solid rgba(255,0,212,.35);
+  color: #E040FB; padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: .2s; }
+.view-receipt-btn:hover { background: rgba(255,0,212,.25); }
+
+/* RECEIPT MODAL */
+.receipt-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.85);
+  display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.receipt-modal { position: relative; background: #1a0033; border-radius: 16px;
+  padding: 20px; max-width: 480px; width: 90%; }
+.receipt-modal-close { position: absolute; top: 12px; right: 14px; background: transparent;
+  border: none; color: white; font-size: 18px; cursor: pointer; }
+.receipt-modal-img { width: 100%; border-radius: 10px; max-height: 70vh; object-fit: contain; }
+
+/* SHARE LINKS */
+.share-links-list { display: flex; flex-direction: column; gap: 9px; margin-top: 8px; }
+.share-link-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.share-link-name { font-size: 13px; font-weight: 600; }
+.share-link-btns { display: flex; gap: 7px; flex-wrap: wrap; }
+.whatsapp-btn { background: #25D366; color: white; padding: 6px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.copy-link-btn { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.18);
+  color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; white-space: nowrap; transition: .2s; }
+.copy-link-btn:hover { background: rgba(255,255,255,.14); }
+
+/* FOOTER BAR */
+.bill-dashboard-footer { margin-top: 60px; background: linear-gradient(90deg,#ff00cc,#a100ff);
+  padding: 22px 60px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; }
+.legend { display: flex; align-items: center; gap: 18px; font-size: 13px; flex-wrap: wrap; }
+.dot { height: 9px; width: 9px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+.dot.pending  { background: orange; }
+.dot.awaiting { background: yellow; }
+.dot.paid     { background: limegreen; }
+.close-btn { background: #fff; color: #8b00ff; border: none; padding: 10px 24px; border-radius: 25px; font-weight: bold; cursor: pointer; }
+
+/* SPINNER */
+.spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.3);
+  border-top-color: white; border-radius: 50%; animation: bdspin .7s linear infinite; display: inline-block; }
+@keyframes bdspin { to { transform: rotate(360deg); } }
+
+/* ══ TABLET (≤ 900px) ═════════════════════════════════════ */
+@media (max-width: 900px) {
+  .bill-dashboard-page   { padding: 80px 28px 0; }
+  .bill-dashboard-top    { flex-direction: column; gap: 28px; }
+  .bill-summary,
+  .payment-status        { width: 100%; }
+  .bill-dashboard-footer { padding: 20px 28px; }
+  .page-title            { font-size: 26px; }
+}
+
+/* ══ MOBILE (≤ 600px) ═════════════════════════════════════ */
+@media (max-width: 600px) {
+  .bill-dashboard-page { padding: 76px 16px 0; }
+  .page-title          { font-size: 22px; margin-bottom: 20px; }
+  .summary-box         { padding: 16px; }
+  .summary-box h3      { font-size: 14px; }
+  .summary-box p       { font-size: 13px; }
+
+  /* ── Fix 3: Payment Status heading spacing ── */
+  .payment-status h2   { font-size: 18px; margin-bottom: 10px; }
+
+  /*
+    At this width the table scrolls horizontally — already handled by
+    .table-scroll-wrapper. table stays at min-width:500px so columns
+    don't collapse.
+  */
+  th, td { padding: 10px 10px; font-size: 13px; }
+
+  .bill-dashboard-footer { padding: 16px; flex-direction: column; text-align: center; gap: 12px; }
+  .legend                { justify-content: center; }
+  .close-btn             { width: 100%; max-width: 220px; }
+
+  .share-link-row        { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .share-link-btns       { width: 100%; }
+  .whatsapp-btn,
+  .copy-link-btn         { flex: 1; text-align: center; }
+}
+
+/* ══ SMALL MOBILE — table → stacked cards (≤ 480px) ═══════ */
+@media (max-width: 480px) {
+  .table-scroll-wrapper  { overflow: visible; }   /* cancel the h-scroll wrapper */
+
+  table  { min-width: unset; width: 100%; }
+  thead  { display: none; }                        /* hide column headers */
+  tbody, tr, td { display: block; width: 100%; }
+
+  tr {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+
+  /*
+    ── Fix 3 core fix ──────────────────────────────────────
+    Each td becomes a flex row: "LABEL · value" on one line.
+    gap: 8px keeps label and value close together.
+    No justify-content:space-between so there's no huge gap.
+  ─────────────────────────────────────────────────────── */
+  td {
+    display: flex;
+    align-items: center;
+    gap: 8px;                       /* ← tight gap, not space-between */
+    padding: 5px 0;
+    font-size: 13px;
+    border: none;
+    min-height: unset;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: rgba(255,255,255,.38);
+    flex-shrink: 0;
+    width: 64px;                    /* ← fixed narrow width, not 80px */
+  }
+
+  /* The content part of each td takes remaining space */
+  td > *,
+  td > span:last-child { flex: 1; }
+
+  /* Action td — button full width */
+  td[data-label="Action"] { padding-top: 10px; border-top: 1px solid rgba(255,255,255,.06); margin-top: 4px; }
+  td[data-label="Action"]::before { display: none; }
+  td[data-label="Action"] button { width: 100%; justify-content: center; }
+
+  .paid-btn, .undo-btn { width: 100%; padding: 9px; border-radius: 8px; }
+
+  .status-badge { font-size: 11px; padding: 4px 9px; }
+}

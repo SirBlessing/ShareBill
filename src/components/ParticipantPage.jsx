@@ -3,10 +3,9 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./ParticipantPage.css";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API = "http://localhost:5000";
 
-
-// Compress image to under ~1.5MB before uploading
+/* Compress image before upload so receipts don't hit the DB size limit */
 const compressImage = (file) =>
   new Promise((resolve) => {
     const reader = new FileReader();
@@ -18,8 +17,7 @@ const compressImage = (file) =>
         if (width > MAX) { height = Math.round((height * MAX) / width); width = MAX; }
         if (height > MAX) { width = Math.round((width * MAX) / height); height = MAX; }
         const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
+        canvas.width = width; canvas.height = height;
         canvas.getContext("2d").drawImage(img, 0, 0, width, height);
         resolve(canvas.toDataURL("image/jpeg", 0.75));
       };
@@ -31,131 +29,122 @@ const compressImage = (file) =>
 const ParticipantPage = () => {
   const { billId, participantIndex } = useParams();
 
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
+  const [data,           setData]           = useState(null);
+  const [loading,        setLoading]        = useState(true);
+  const [error,          setError]          = useState("");
   const [receiptPreview, setReceiptPreview] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [uploadDone, setUploadDone] = useState(false);
-  const [uploadError, setUploadError] = useState("");
+  const [uploading,      setUploading]      = useState(false);
+  const [uploadDone,     setUploadDone]     = useState(false);
+  const [uploadError,    setUploadError]    = useState("");
+  const [copied,         setCopied]         = useState(false);
 
-  const fileInputRef = useRef();
+  /*
+    Fix 2 — Two separate hidden file inputs
+    ─────────────────────────────────────────────────────────────
+    galleryRef  → NO capture attribute
+      Android: opens file manager / photo gallery / Downloads
+      iOS:     shows "Photo Library" + "Browse" (Files app)
+      → This is what the user wants when receipt is already downloaded
 
-  // ─── FETCH BILL INFO ──────────────────────────────────────
+    cameraRef   → capture="environment"
+      Opens camera directly on any mobile device
+    ─────────────────────────────────────────────────────────────
+  */
+  const galleryRef = useRef();
+  const cameraRef  = useRef();
+
+  /* fetch bill info */
   useEffect(() => {
-    const fetchData = async () => {
+    (async () => {
       try {
-        const res = await axios.get(
-          `${API}/bills/public/${billId}/${participantIndex}`
-        );
+        const res = await axios.get(`${API}/bills/public/${billId}/${participantIndex}`);
         setData(res.data);
-        // If receipt already uploaded before, show that state
-        if (res.data.status === "awaiting" || res.data.status === "paid") {
-          setUploadDone(true);
-        }
+        if (["awaiting","paid"].includes(res.data.status)) setUploadDone(true);
       } catch (err) {
-        setError(
-          err.response?.data?.message || "Could not load bill. Check the link."
-        );
+        setError(err.response?.data?.message || "Could not load bill. Check the link.");
       } finally {
         setLoading(false);
       }
-    };
-    fetchData();
+    })();
   }, [billId, participantIndex]);
 
-  // ─── PICK IMAGE ───────────────────────────────────────────
+  /* handle file selected from either input */
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     if (!file.type.startsWith("image/")) {
       setUploadError("Please select an image file (JPG, PNG, etc.)");
       return;
     }
-
     setUploadError("");
     const compressed = await compressImage(file);
     setReceiptPreview(compressed);
+    e.target.value = ""; // reset so same file can be re-selected
   };
 
-  // ─── UPLOAD ───────────────────────────────────────────────
+  /* upload to server */
   const handleUpload = async () => {
     if (!receiptPreview) return;
-
     setUploading(true);
     setUploadError("");
-
     try {
       await axios.post(
         `${API}/bills/public/${billId}/${participantIndex}/receipt`,
         { receipt: receiptPreview }
       );
       setUploadDone(true);
-      setData((prev) => ({ ...prev, status: "awaiting" }));
+      setData(prev => ({ ...prev, status: "awaiting" }));
     } catch (err) {
-      setUploadError(
-        err.response?.data?.message || "Upload failed. Please try again."
-      );
+      setUploadError(err.response?.data?.message || "Upload failed. Please try again.");
     } finally {
       setUploading(false);
     }
   };
 
-  // ─── COPY TO CLIPBOARD ────────────────────────────────────
-  const copyAccountNumber = () => {
-    navigator.clipboard.writeText(data.accountNumber);
-    alert("Account number copied!");
+  const copyAccount = () => {
+    navigator.clipboard.writeText(data.accountNumber).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
-  // ─── RENDER STATES ────────────────────────────────────────
-  if (loading) {
-    return (
-      <div className="pp-loading">
-        <div className="pp-spinner"></div>
-        <p>Loading your bill...</p>
-      </div>
-    );
-  }
+  /* states */
+  if (loading) return (
+    <div className="pp-loading">
+      <div className="pp-spinner" />
+      <p>Loading your bill…</p>
+    </div>
+  );
 
-  if (error) {
-    return (
-      <div className="pp-error-page">
-        <div className="pp-error-box">
-          <span className="pp-error-icon">⚠️</span>
-          <h2>Oops!</h2>
-          <p>{error}</p>
-        </div>
+  if (error) return (
+    <div className="pp-error-page">
+      <div className="pp-error-box">
+        <span className="pp-error-icon">⚠️</span>
+        <h2>Oops!</h2>
+        <p>{error}</p>
       </div>
-    );
-  }
+    </div>
+  );
 
-  const statusColor = {
-    pending: "#ffc107",
-    awaiting: "#ff9800",
-    paid: "#00c853",
-  };
+  const statusColor = { pending:"#ffc107", awaiting:"#ff9800", paid:"#00c853" };
 
   return (
     <div className="pp-wrapper">
 
-      {/* HEADER */}
       <div className="pp-header">
         <div className="pp-logo">ShareBill</div>
         <p className="pp-tagline">Your payment details</p>
       </div>
 
-      {/* CARD */}
       <div className="pp-card">
 
-        {/* GREETING */}
+        {/* Greeting */}
         <div className="pp-greeting">
           <h2>Hey, <span className="pp-name">{data.participantName}</span> 👋</h2>
           <p>You've been added to a bill. Here are your payment details.</p>
         </div>
 
-        {/* BILL INFO */}
+        {/* Bill info */}
         <div className="pp-section pp-bill-info">
           <div className="pp-info-row">
             <span className="pp-label">Bill</span>
@@ -164,21 +153,18 @@ const ParticipantPage = () => {
           <div className="pp-info-row pp-amount-row">
             <span className="pp-label">Your Share</span>
             <span className="pp-amount">
-              ₦{Number(data.amount).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+              ₦{Number(data.amount).toLocaleString(undefined,{maximumFractionDigits:2})}
             </span>
           </div>
           <div className="pp-info-row">
             <span className="pp-label">Status</span>
-            <span
-              className="pp-status-pill"
-              style={{ background: statusColor[data.status] || "#999" }}
-            >
+            <span className="pp-status-pill" style={{background:statusColor[data.status]||"#999"}}>
               {data.status === "awaiting" ? "Receipt Received ✓" : data.status}
             </span>
           </div>
         </div>
 
-        {/* BANK DETAILS */}
+        {/* Bank details */}
         <div className="pp-section">
           <h3 className="pp-section-title">Pay To</h3>
           <div className="pp-bank-box">
@@ -191,18 +177,18 @@ const ParticipantPage = () => {
               <span className="pp-bank-value">{data.bankName}</span>
             </div>
             <div className="pp-bank-row">
-              <span className="pp-bank-label">Account Number</span>
+              <span className="pp-bank-label">Account No.</span>
               <div className="pp-acct-copy">
                 <span className="pp-bank-value pp-acct-num">{data.accountNumber}</span>
-                <button className="pp-copy-btn" onClick={copyAccountNumber}>
-                  Copy
+                <button className="pp-copy-btn" onClick={copyAccount}>
+                  {copied ? "Copied ✓" : "Copy"}
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* RECEIPT UPLOAD */}
+        {/* Receipt upload */}
         <div className="pp-section">
           <h3 className="pp-section-title">Proof of Payment</h3>
 
@@ -217,59 +203,67 @@ const ParticipantPage = () => {
           ) : (
             <>
               <p className="pp-upload-hint">
-                After making the transfer, upload a screenshot or photo of your receipt.
+                After transferring, upload a screenshot of your receipt below.
               </p>
 
-              {/* FILE PICKER */}
+              {/* ── Hidden inputs ── */}
+              {/* Gallery / Files input — NO capture attribute */}
               <input
-                ref={fileInputRef}
+                ref={galleryRef}
+                type="file"
+                accept="image/*"
+                style={{ display:"none" }}
+                onChange={handleFileChange}
+              />
+              {/* Camera input — opens camera directly */}
+              <input
+                ref={cameraRef}
                 type="file"
                 accept="image/*"
                 capture="environment"
-                style={{ display: "none" }}
+                style={{ display:"none" }}
                 onChange={handleFileChange}
               />
 
-              <button
-                className="pp-pick-btn"
-                onClick={() => fileInputRef.current.click()}
-              >
-                📷 Choose Receipt Image
-              </button>
-
-              {/* PREVIEW */}
-              {receiptPreview && (
-                <div className="pp-preview-wrap">
-                  <img
-                    src={receiptPreview}
-                    alt="Receipt preview"
-                    className="pp-preview-img"
-                  />
+              {/* ── Visible buttons (only shown before image is picked) ── */}
+              {!receiptPreview && (
+                <div className="pp-pick-btns">
                   <button
-                    className="pp-remove-btn"
-                    onClick={() => setReceiptPreview(null)}
+                    className="pp-pick-btn pp-pick-gallery"
+                    onClick={() => galleryRef.current.click()}
                   >
-                    ✕ Remove
+                    <span className="pp-btn-icon">📁</span>
+                    <span>
+                      <strong>Gallery / Files</strong>
+                      <small>Choose from downloads or photos</small>
+                    </span>
+                  </button>
+                  <button
+                    className="pp-pick-btn pp-pick-camera"
+                    onClick={() => cameraRef.current.click()}
+                  >
+                    <span className="pp-btn-icon">📷</span>
+                    <span>
+                      <strong>Take a Photo</strong>
+                      <small>Open camera now</small>
+                    </span>
                   </button>
                 </div>
               )}
 
-              {uploadError && (
-                <p className="pp-upload-error">{uploadError}</p>
+              {/* Preview */}
+              {receiptPreview && (
+                <div className="pp-preview-wrap">
+                  <img src={receiptPreview} alt="Receipt preview" className="pp-preview-img" />
+                  <button className="pp-remove-btn" onClick={() => setReceiptPreview(null)}>✕ Remove</button>
+                </div>
               )}
 
-              {/* SUBMIT */}
+              {uploadError && <p className="pp-upload-error">{uploadError}</p>}
+
               {receiptPreview && (
-                <button
-                  className="pp-submit-btn"
-                  onClick={handleUpload}
-                  disabled={uploading}
-                >
-                  {uploading ? (
-                    <span className="pp-spinner-inline"></span>
-                  ) : (
-                    "Submit Receipt"
-                  )}
+                <button className="pp-submit-btn" onClick={handleUpload} disabled={uploading}>
+                  {uploading ? <span className="pp-spinner-inline" /> : "Submit Receipt"}
                 </button>
               )}
             </>
