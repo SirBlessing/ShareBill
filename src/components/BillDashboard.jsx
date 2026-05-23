@@ -3,7 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./BillDashboard.css";
 
-const API = "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+// Change this to your live domain when deployed
 const APP_BASE_URL = window.location.origin;
 
 /* ─── FIX 1: normalise any Nigerian number to 234XXXXXXXXXX ─── */

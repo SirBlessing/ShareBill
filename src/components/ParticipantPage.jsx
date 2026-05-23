@@ -3,7 +3,10 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./ParticipantPage.css";
 
-const API = "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+// Change this to your live domain when deployed
+const APP_BASE_URL = window.location.origin;
 
 /* Compress image before upload so receipts don't hit the DB size limit */
 const compressImage = (file) =>
