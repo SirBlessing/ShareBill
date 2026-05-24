@@ -2,17 +2,20 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const contactItems = [
-  { icon: "📞", label: "+234 706 311 5275" },
-  { icon: "📧", label: "Sharebillcompany@gmail.com" },
-  { icon: "🌐", label: "Sharebill.com" },
-  { icon: "📍", label: "Nigeria" },
+  { icon:"📞", label:"+234 706 311 5275" },
+  { icon:"📧", label:"Sharebillcompany@gmail.com" },
+  { icon:"🌐", label:"Sharebill.com" },
+  { icon:"📍", label:"Nigeria" },
 ];
 
 export default function Contact() {
+  /* Auth-aware: logged-in users go straight to the form */
+  const billLink = localStorage.getItem("token") ? "/create-bill" : "/create-account";
+
   return (
     <section id="contact" className="cta-section">
       <div className="cta-card">
-        <div className="section-tag" style={{ margin: "0 auto 24px" }}>
+        <div className="section-tag" style={{ margin:"0 auto 24px" }}>
           🚀 Get Started
         </div>
 
@@ -27,7 +30,7 @@ export default function Contact() {
         </p>
 
         <div className="cta-buttons">
-          <Link to="/create-account" className="btn-primary" style={{ fontSize: 16, padding: "16px 36px" }}>
+          <Link to={billLink} className="btn-primary" style={{ fontSize:16, padding:"16px 36px" }}>
             Create a Free Bill →
           </Link>
           <Link to="/login" className="btn-outline">
