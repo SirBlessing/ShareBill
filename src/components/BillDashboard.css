@@ -215,3 +215,102 @@ th { font-weight: 600; background: rgba(255,255,255,.04); }
   padding: 4px 10px;
   white-space: nowrap;
 }
+
+/* ═══ REMINDER MODAL ════════════════════════════════════════ */
+.remind-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.75);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 20px;
+}
+.remind-modal {
+  background: #130024;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px;
+  width: 100%; max-width: 460px;
+  max-height: 80vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0,0,0,.6);
+  animation: rm-in .2s ease;
+}
+@keyframes rm-in {
+  from { opacity:0; transform:translateY(16px) scale(.97); }
+  to   { opacity:1; transform:translateY(0)    scale(1);   }
+}
+
+.remind-modal-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 22px 22px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.remind-modal-header h3 { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+.remind-modal-header p  { font-size: 13px; color: rgba(243,232,255,.5); }
+.remind-modal-close {
+  background: none; border: none; color: rgba(243,232,255,.5);
+  font-size: 18px; cursor: pointer; padding: 2px 6px;
+  transition: color .2s;
+}
+.remind-modal-close:hover { color: white; }
+
+.remind-list {
+  overflow-y: auto; padding: 12px 22px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.remind-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 12px 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px;
+  transition: background .2s;
+}
+.remind-row:hover { background: rgba(255,255,255,.07); }
+
+.remind-row-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.remind-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #C026D3, #7C3AED);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: white; flex-shrink: 0;
+}
+.remind-name  { font-size: 14px; font-weight: 600; color: #F3E8FF; }
+.remind-meta  { font-size: 12px; color: rgba(243,232,255,.45); margin-top: 2px; }
+
+.remind-status-pill {
+  display: inline-block; padding: 1px 7px; border-radius: 99px;
+  font-size: 11px; font-weight: 600;
+}
+.rs-pending  { background: rgba(255,77,77,.12);  color: #ff4d4d; }
+.rs-awaiting { background: rgba(255,193,7,.12);  color: #ffc107; }
+
+.remind-wa-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 14px;
+  background: #25D366; color: white;
+  border-radius: 20px; font-size: 13px; font-weight: 600;
+  text-decoration: none; white-space: nowrap; flex-shrink: 0;
+  transition: opacity .2s, transform .15s;
+}
+.remind-wa-btn:hover { opacity: .88; transform: translateY(-1px); }
+
+.remind-empty {
+  text-align: center; padding: 32px 22px;
+  font-size: 16px; color: #4ade80;
+}
+
+.remind-modal-footer {
+  padding: 14px 22px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  font-size: 12px; color: rgba(243,232,255,.35);
+  text-align: center; line-height: 1.5;
+}
+
+/* Mobile reminder modal */
+@media (max-width: 480px) {
+  .remind-modal { border-radius: 16px; }
+  .remind-modal-header { padding: 18px 18px 14px; }
+  .remind-list { padding: 10px 16px; }
+  .remind-row { padding: 10px 12px; }
+  .remind-modal-footer { padding: 12px 16px; }
+}
