@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./BillDashboard.css";
@@ -6,45 +6,120 @@ import "./BillDashboard.css";
 const API          = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const APP_BASE_URL = window.location.origin;
 
-function toWhatsAppNumber(raw = "") {
-  const d = raw.replace(/\D/g, "");
-  if (!d) return "";
-  if (d.startsWith("234") && d.length >= 12) return d;
-  if (d.startsWith("0")   && d.length === 11) return "234" + d.slice(1);
-  if (d.length === 10) return "234" + d;
-  return d;
+/* ─────────────────────────────────────────────────────────────
+   AD WATCH MODAL
+   Shows a simulated 5-second ad with countdown + progress bar.
+   Cannot be dismissed early. Calls onComplete() when done.
+───────────────────────────────────────────────────────────── */
+const AD_DURATION = 5; // seconds
+
+function AdWatchModal({ purpose, onComplete }) {
+  const [seconds,  setSeconds]  = useState(AD_DURATION);
+  const [progress, setProgress] = useState(0);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setSeconds(s => {
+        const next = s - 1;
+        setProgress(((AD_DURATION - next) / AD_DURATION) * 100);
+        if (next <= 0) {
+          clearInterval(intervalRef.current);
+          setTimeout(onComplete, 300); // small pause before unlock
+        }
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(intervalRef.current);
+  }, [onComplete]);
+
+  const label = purpose === "markPaid"
+    ? "to unlock payment confirmation"
+    : "to unlock reminders";
+
+  return (
+    <div className="ad-overlay">
+      <div className="ad-modal">
+
+        {/* Fake ad banner */}
+        <div className="ad-banner">
+          <div className="ad-banner-tag">ADVERTISEMENT</div>
+          <div className="ad-banner-content">
+            <div className="ad-logo-box">📱</div>
+            <div>
+              <div className="ad-brand">ShareBill Pro</div>
+              <div className="ad-tagline">Split bills. Collect faster. Stress-free.</div>
+            </div>
+          </div>
+          <div className="ad-skip-note">Ad {AD_DURATION - seconds + 1} of 1</div>
+        </div>
+
+        {/* Countdown ring */}
+        <div className="ad-countdown-wrap">
+          <svg className="ad-ring" viewBox="0 0 60 60">
+            <circle cx="30" cy="30" r="24"
+              fill="none" stroke="rgba(255,255,255,.1)" strokeWidth="4"/>
+            <circle cx="30" cy="30" r="24"
+              fill="none" stroke="#C026D3" strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray={`${2 * Math.PI * 24}`}
+              strokeDashoffset={`${2 * Math.PI * 24 * (1 - progress / 100)}`}
+              transform="rotate(-90 30 30)"
+              style={{ transition: "stroke-dashoffset 0.9s linear" }}
+            />
+          </svg>
+          <div className="ad-countdown-num">{Math.max(seconds, 0)}</div>
+        </div>
+
+        {/* Progress bar */}
+        <div className="ad-progress-bar">
+          <div className="ad-progress-fill" style={{ width: `${progress}%` }} />
+        </div>
+
+        <p className="ad-desc">
+          Watch this short ad {label}.<br />
+          Ads keep ShareBill free for everyone 💜
+        </p>
+
+        <p className="ad-wait">
+          {seconds > 0
+            ? `Please wait ${seconds} second${seconds !== 1 ? "s" : ""}…`
+            : "✅ Unlocking…"}
+        </p>
+      </div>
+    </div>
+  );
 }
 
-/* ── Reminder modal ─────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   REMINDER MODAL
+───────────────────────────────────────────────────────────── */
 function RemindModal({ participants, bill, billId, onClose }) {
-  // Only participants who haven't paid (and are not the creator)
   const pending = participants
     .map((p, i) => ({ ...p, realIndex: i }))
     .filter(p => !p.isCreator && p.status !== "paid");
 
-  const buildReminderLink = (p) => {
+  const buildLink = (p) => {
     const phone    = toWhatsAppNumber(p.whatsapp);
     const pageLink = `${APP_BASE_URL}/pay/${billId}/${p.realIndex}`;
     const msg =
       `Hi ${p.name}! 👋\n\n` +
       `Just a reminder about *${bill.title}*.\n` +
       `Your share: *₦${Number(p.amount).toLocaleString()}*\n\n` +
-      `Please pay to:\n` +
-      `Bank: ${bill.bank_name}\n` +
+      `Please pay to:\nBank: ${bill.bank_name}\n` +
       `Account: ${bill.account_name} — ${bill.account_number}\n\n` +
-      `After paying, upload your receipt here:\n${pageLink}\n\nThank you! 🙏`;
+      `Upload your receipt here:\n${pageLink}\n\nThank you! 🙏`;
     return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
   };
 
   return (
     <div className="remind-modal-overlay" onClick={onClose}>
       <div className="remind-modal" onClick={e => e.stopPropagation()}>
-
         <div className="remind-modal-header">
           <div>
             <h3>🔔 Send Reminders</h3>
             <p>{pending.length === 0
-              ? "Everyone has paid — nothing to remind!"
+              ? "Everyone has paid!"
               : `${pending.length} participant${pending.length !== 1 ? "s" : ""} still pending`}
             </p>
           </div>
@@ -62,19 +137,14 @@ function RemindModal({ participants, bill, billId, onClose }) {
                   <div>
                     <div className="remind-name">{p.name}</div>
                     <div className="remind-meta">
-                      ₦{Number(p.amount).toLocaleString()} &nbsp;·&nbsp;
+                      ₦{Number(p.amount).toLocaleString()} ·{" "}
                       <span className={`remind-status-pill rs-${p.status || "pending"}`}>
                         {p.status || "pending"}
                       </span>
                     </div>
                   </div>
                 </div>
-                <a
-                  href={buildReminderLink(p)}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="remind-wa-btn"
-                >
+                <a href={buildLink(p)} target="_blank" rel="noreferrer" className="remind-wa-btn">
                   💬 Send
                 </a>
               </div>
@@ -90,20 +160,40 @@ function RemindModal({ participants, bill, billId, onClose }) {
   );
 }
 
-/* ── Main dashboard ─────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   PHONE NORMALISER
+───────────────────────────────────────────────────────────── */
+function toWhatsAppNumber(raw = "") {
+  const d = raw.replace(/\D/g, "");
+  if (!d) return "";
+  if (d.startsWith("234") && d.length >= 12) return d;
+  if (d.startsWith("0")   && d.length === 11) return "234" + d.slice(1);
+  if (d.length === 10) return "234" + d;
+  return d;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   BILL DASHBOARD
+───────────────────────────────────────────────────────────── */
 const BillDashboard = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [bill,          setBill]          = useState(null);
-  const [participants,  setParticipants]  = useState([]);
-  const [loading,       setLoading]       = useState(true);
-  const [actionLoading, setActionLoading] = useState(null);
-  const [receiptModal,  setReceiptModal]  = useState(null);
-  const [remindModal,   setRemindModal]   = useState(false);
-  const [shareUnlocked, setShareUnlocked] = useState(false);
-  const [unlockLoading, setUnlockLoading] = useState(false);
-  const [copiedIndex,   setCopiedIndex]   = useState(null);
+  const [bill,             setBill]             = useState(null);
+  const [participants,     setParticipants]     = useState([]);
+  const [loading,          setLoading]          = useState(true);
+  const [actionLoading,    setActionLoading]    = useState(null);
+  const [receiptModal,     setReceiptModal]     = useState(null);
+  const [remindModal,      setRemindModal]      = useState(false);
+  const [shareUnlocked,    setShareUnlocked]    = useState(false);
+  const [unlockLoading,    setUnlockLoading]    = useState(false);
+  const [copiedIndex,      setCopiedIndex]      = useState(null);
+
+  // Ad gate states
+  // null = no ad playing  |  "markPaid"  |  "remind"
+  const [adPlaying,        setAdPlaying]        = useState(null);
+  const [markPaidUnlocked, setMarkPaidUnlocked] = useState(false);
+  const [remindUnlocked,   setRemindUnlocked]   = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -118,6 +208,17 @@ const BillDashboard = () => {
       finally  { setLoading(false); }
     })();
   }, [id, navigate]);
+
+  /* After ad finishes */
+  const handleAdComplete = () => {
+    if (adPlaying === "markPaid") {
+      setMarkPaidUnlocked(true);
+    } else if (adPlaying === "remind") {
+      setRemindUnlocked(true);
+      setRemindModal(true);
+    }
+    setAdPlaying(null);
+  };
 
   const handleStatusChange = async (index, newStatus) => {
     setActionLoading(index);
@@ -144,7 +245,7 @@ const BillDashboard = () => {
     } catch { alert("Failed to close bill."); }
   };
 
-  const handleUnlock = () => {
+  const handleUnlockShare = () => {
     setUnlockLoading(true);
     setTimeout(() => { setUnlockLoading(false); setShareUnlocked(true); }, 3000);
   };
@@ -170,14 +271,22 @@ const BillDashboard = () => {
 
   if (loading || !bill) return <p style={{ color: "white", padding: 40 }}>Loading…</p>;
 
-  const totalAmount      = Number(bill.total_amount);
-  const participantCount = participants.length;
-  const paidCount        = participants.filter(p => p.status === "paid").length;
-  const awaitingCount    = participants.filter(p => p.status === "awaiting").length;
-  const pendingCount     = participantCount - paidCount - awaitingCount;
+  const totalAmount   = Number(bill.total_amount);
+  const paidCount     = participants.filter(p => p.status === "paid").length;
+  const awaitingCount = participants.filter(p => p.status === "awaiting").length;
+  const pendingCount  = participants.length - paidCount - awaitingCount;
+  const needRemind    = pendingCount + awaitingCount;
 
   return (
     <div className="bill-dashboard-page">
+
+      {/* Ad modal — blocks everything until ad is done */}
+      {adPlaying && (
+        <AdWatchModal
+          purpose={adPlaying}
+          onComplete={handleAdComplete}
+        />
+      )}
 
       {/* Receipt modal */}
       {receiptModal && (
@@ -189,7 +298,7 @@ const BillDashboard = () => {
         </div>
       )}
 
-      {/* Reminder modal */}
+      {/* Reminder modal — only visible after remindUnlocked */}
       {remindModal && (
         <RemindModal
           participants={participants}
@@ -201,7 +310,7 @@ const BillDashboard = () => {
 
       <div className="bill-dashboard-top">
 
-        {/* LEFT */}
+        {/* ── LEFT ── */}
         <div className="bill-summary">
           <h1 className="page-title">Bill Dashboard</h1>
 
@@ -215,8 +324,8 @@ const BillDashboard = () => {
 
           <div className="summary-box">
             <h3>Progress</h3>
-            <p>✅ Paid: <strong>{paidCount}</strong> / {participantCount}</p>
-            <p>⏳ Awaiting confirmation: <strong>{awaitingCount}</strong></p>
+            <p>✅ Paid: <strong>{paidCount}</strong> / {participants.length}</p>
+            <p>⏳ Awaiting: <strong>{awaitingCount}</strong></p>
             <p>🔴 Pending: <strong>{pendingCount}</strong></p>
           </div>
 
@@ -228,52 +337,72 @@ const BillDashboard = () => {
                 <p style={{ fontSize: 13, opacity: .7, marginBottom: 12 }}>
                   Watch a quick ad to unlock WhatsApp links for participants.
                 </p>
-                <button className="remind-btn" onClick={handleUnlock}
+                <button className="remind-btn" onClick={handleUnlockShare}
                   disabled={unlockLoading} style={{ width: "100%" }}>
                   {unlockLoading ? "⏳ Loading ad…" : "▶ Watch Ad to Unlock Links"}
                 </button>
               </>
             ) : (
               <div className="share-links-list">
-                {participants.map((p, i) =>
-                  !p.isCreator && (
-                    <div className="share-link-row" key={i}>
+                {participants.filter(p => !p.isCreator).map((p, i) => {
+                  const realIndex = participants.indexOf(p);
+                  return (
+                    <div className="share-link-row" key={realIndex}>
                       <span className="share-link-name">{p.name}</span>
                       <div className="share-link-btns">
-                        <a href={buildWhatsAppLink(p, i)} target="_blank" rel="noreferrer"
+                        <a href={buildWhatsAppLink(p, realIndex)} target="_blank" rel="noreferrer"
                           className="whatsapp-btn">💬 WhatsApp</a>
-                        <button className="copy-link-btn" onClick={() => handleCopyLink(i)}>
-                          {copiedIndex === i ? "Copied!" : "Copy Link"}
+                        <button className="copy-link-btn" onClick={() => handleCopyLink(realIndex)}>
+                          {copiedIndex === realIndex ? "Copied!" : "Copy"}
                         </button>
                       </div>
                     </div>
-                  )
-                )}
+                  );
+                })}
               </div>
             )}
           </div>
 
-          {/* Remind All — now opens the modal */}
-          <button
-            className="remind-btn"
-            onClick={() => setRemindModal(true)}
-          >
-            🔔 Remind All Pending ({pendingCount + awaitingCount})
-          </button>
+          {/* ── REMIND BUTTON — ad-gated ── */}
+          {!remindUnlocked ? (
+            <button
+              className="remind-btn remind-btn-locked"
+              onClick={() => setAdPlaying("remind")}
+            >
+              🔒 Watch Ad to Send Reminders ({needRemind})
+            </button>
+          ) : (
+            <button
+              className="remind-btn"
+              onClick={() => setRemindModal(true)}
+            >
+              🔔 Send Reminders ({needRemind})
+            </button>
+          )}
         </div>
 
-        {/* RIGHT TABLE */}
+        {/* ── RIGHT TABLE ── */}
         <div className="payment-status">
           <h2>Payment Status</h2>
+
+          {/* Unlock notice shown above table when not yet unlocked */}
+          {!markPaidUnlocked && (
+            <div className="markpaid-lock-banner">
+              <span>🔒 Mark as Paid is locked</span>
+              <button
+                className="markpaid-unlock-btn"
+                onClick={() => setAdPlaying("markPaid")}
+              >
+                ▶ Watch Ad to Unlock
+              </button>
+            </div>
+          )}
+
           <div className="table-scroll-wrapper">
             <table>
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Receipt</th>
-                  <th>Action</th>
+                  <th>Name</th><th>Amount</th><th>Status</th><th>Receipt</th><th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -281,6 +410,47 @@ const BillDashboard = () => {
                   const status     = p.status || "pending";
                   const isCreator  = !!p.isCreator;
                   const isUpdating = actionLoading === i;
+
+                  /* What the action cell shows */
+                  let actionCell;
+
+                  if (isUpdating) {
+                    actionCell = <div className="spinner" style={{ margin: "0 auto" }} />;
+
+                  } else if (status === "paid") {
+                    // Undo is always free — no ad needed
+                    actionCell = (
+                      <button className="undo-btn" onClick={() => handleStatusChange(i, "pending")}>
+                        Undo
+                      </button>
+                    );
+
+                  } else if (!markPaidUnlocked) {
+                    // Locked state — greyed button that launches the ad
+                    actionCell = (
+                      <button
+                        className="paid-btn paid-btn-locked"
+                        onClick={() => setAdPlaying("markPaid")}
+                        title="Watch an ad to unlock"
+                      >
+                        🔒 {status === "awaiting" ? "Confirm" : isCreator ? "My Share" : "Mark Paid"}
+                      </button>
+                    );
+
+                  } else if (status === "awaiting") {
+                    actionCell = (
+                      <button className="paid-btn" onClick={() => handleStatusChange(i, "paid")}>
+                        ✓ Confirm
+                      </button>
+                    );
+
+                  } else {
+                    actionCell = (
+                      <button className="paid-btn" onClick={() => handleStatusChange(i, "paid")}>
+                        {isCreator ? "Mark My Share Paid" : "Mark Paid"}
+                      </button>
+                    );
+                  }
 
                   return (
                     <tr key={i} className={isCreator ? "creator-row" : ""}>
@@ -294,39 +464,23 @@ const BillDashboard = () => {
                       <td data-label="Status">
                         <span className={`status-badge ${status}`}>
                           <span className="status-dot" />
-                          {status === "awaiting" ? "Awaiting" : status.charAt(0).toUpperCase() + status.slice(1)}
+                          {status === "awaiting" ? "Awaiting"
+                            : status.charAt(0).toUpperCase() + status.slice(1)}
                         </span>
                       </td>
                       <td data-label="Receipt">
-                        {/* Creator never uploads a receipt */}
                         {isCreator
                           ? <span style={{ opacity: .4, fontSize: 12 }}>N/A</span>
                           : p.receipt
-                          ? <button className="view-receipt-btn" onClick={() => setReceiptModal(p.receipt)}>View 🧾</button>
+                          ? <button className="view-receipt-btn"
+                              onClick={() => setReceiptModal(p.receipt)}>View 🧾</button>
                           : <span style={{ opacity: .4, fontSize: 12 }}>None</span>}
                       </td>
-                      <td data-label="Action">
-                        {isUpdating ? (
-                          <div className="spinner" style={{ margin: "0 auto" }} />
-                        ) : status === "paid" ? (
-                          /* Paid → show Undo for everyone including creator */
-                          <button className="undo-btn" onClick={() => handleStatusChange(i, "pending")}>
-                            Undo
-                          </button>
-                        ) : status === "awaiting" ? (
-                          <button className="paid-btn" onClick={() => handleStatusChange(i, "paid")}>
-                            ✓ Confirm
-                          </button>
-                        ) : (
-                          /* Creator sees same "Mark Paid" button as everyone else */
-                          <button className="paid-btn" onClick={() => handleStatusChange(i, "paid")}>
-                            {isCreator ? "Mark My Share Paid" : "Mark Paid"}
-                          </button>
-                        )}
-                      </td>
+                      <td data-label="Action">{actionCell}</td>
                     </tr>
                   );
                 })}
+
                 {participants.length === 0 && (
                   <tr>
                     <td colSpan={5} style={{ textAlign: "center", opacity: .5 }}>
