@@ -91,7 +91,7 @@ function Login() {
   const [form,    setForm]    = useState({ email: "", password: "" });
   const [error,   setError]   = useState("");
   const [loading, setLoading] = useState(false);
-
+  const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleLogin = async () => {

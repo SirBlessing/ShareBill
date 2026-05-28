@@ -79,7 +79,7 @@ function CreateAccount() {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const validate = () => {
     const { fullname, email, phone_number, password, confirmPassword } = form;
     if (!fullname || !email || !phone_number || !password || !confirmPassword)
