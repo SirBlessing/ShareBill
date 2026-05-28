@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+// import API from "../config";
 import "./AuthPages.css";
 
 /* ══════════════════════════════════════════
@@ -69,9 +70,6 @@ function RegisterIllustration() {
 /* ══════════════════════════════════════════
    CREATE ACCOUNT PAGE
 ══════════════════════════════════════════ */
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-
 function CreateAccount() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -100,7 +98,7 @@ function CreateAccount() {
     if (!validate()) return;
     setLoading(true); setError("");
     try {
-      const res = await axios.post(`${API_BASE_URL}/auth/register`, {
+      const res = await axios.post(`${API}/auth/register`, {
         fullname: form.fullname,
         email: form.email,
         phone_number: form.phone_number,
@@ -166,7 +164,7 @@ function CreateAccount() {
           Already have an account? <Link to="/login">Log in here</Link>
         </p>
         <p className="auth-terms">
-          By signing up you agree to our <span>Terms</span> &amp; <span>Privacy Policy</span>
+          By signing up you agree to our <Link to="/legal?tab=terms">Terms</Link> &amp; <Link to="/legal?tab=privacy">Privacy Policy</Link>
         </p>
       </div>
 

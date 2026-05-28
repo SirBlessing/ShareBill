@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+// import API from "../config";
 import "./AuthPages.css";
 
 /* ══════════════════════════════════════════
@@ -85,9 +86,6 @@ function LoginIllustration() {
 /* ══════════════════════════════════════════
    LOGIN PAGE
 ══════════════════════════════════════════ */
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
- 
 function Login() {
   const navigate = useNavigate();
   const [form,    setForm]    = useState({ email: "", password: "" });
@@ -100,14 +98,11 @@ function Login() {
     if (!form.email || !form.password) { setError("All fields are required."); return; }
     setLoading(true); setError("");
     try {
-      const res = await axios.post(`${API_BASE_URL}/auth/login`, form);
-            if (res.data.success) {
+      const res = await axios.post(`${API}/auth/login`, form);
+      if (res.data.success) {
         localStorage.setItem("token", res.data.token);
-        // Dispatch the custom event so the Navbar updates instantly
-        window.dispatchEvent(new Event("authChange")); 
         navigate("/dashboard");
-      }
- else {
+      } else {
         setError(res.data.message || "Invalid credentials");
       }
     } catch (err) {
@@ -153,7 +148,7 @@ function Login() {
           No account yet? <Link to="/create-account">Create one free →</Link>
         </p>
         <p className="auth-terms">
-          By signing in you agree to our <span>Terms</span> &amp; <span>Privacy Policy</span>
+          By signing in you agree to our <Link to="/legal?tab=terms">Terms</Link> &amp; <Link to="/legal?tab=privacy">Privacy Policy</Link>
         </p>
       </div>
 

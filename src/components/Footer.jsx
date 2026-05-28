@@ -33,8 +33,8 @@ export default function Footer() {
             <ul className="footer-links">
               <li><a href="#contact">About Us</a></li>
               <li><a href="#contact">Contact</a></li>
-              <li><a href="#contact">Privacy Policy</a></li>
-              <li><a href="#contact">Terms of Use</a></li>
+              <li><Link to="/legal?tab=privacy">Privacy Policy</Link></li>
+              <li><Link to="/legal?tab=terms">Terms of Use</Link></li>
             </ul>
           </div>
 
@@ -52,7 +52,7 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <p className="footer-copy">
-            © {new Date().getFullYear()} ShareBill. DevBlessing 2026. All rights reserved.
+            © {new Date().getFullYear()} ShareBill. Made with 💜 in Nigeria. All rights reserved.
           </p>
           <div className="footer-social">
             <a href="#" className="footer-social-btn" aria-label="Twitter">𝕏</a>
