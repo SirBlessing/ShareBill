@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-// import AdUnit from "./AdUnit";
+import AdUnit from "./AdUnit";
 import "./UnlockLink.css";
 
-const AD_DURATION = 5; // seconds the ad shows before the button activates
+const AD_DURATION = 15; // seconds the ad shows before the button activates
 
 function UnlockLink() {
   const [adShowing,  setAdShowing]  = useState(false);
