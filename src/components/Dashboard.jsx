@@ -118,12 +118,10 @@ function PhoneIllustration({ bills }) {
         <path d="M 235 165 L 205 250" stroke="rgba(192,38,211,0.1)" strokeWidth="1"/>
 
         {/* LEFT ARM — wraps around phone */}
+       <path d="M 88 210 Q 52 285 72 350 Q 80 375 118 390 L 138 400"
+  stroke="rgba(124,58,237,0.38)" strokeWidth="34" strokeLinecap="round" fill="none"/>
         <path d="M 88 210 Q 52 285 72 350 Q 80 375 118 390 L 138 400"
-          stroke="url(#body-grad)" strokeWidth="34" strokeLinecap="round" fill="none"
-          stroke="rgba(124,58,237,0.38)"/>
-        <path d="M 88 210 Q 52 285 72 350 Q 80 375 118 390 L 138 400"
-          stroke="rgba(192,38,211,0.18)" strokeWidth="34" strokeLinecap="round" fill="none"/>
-
+  stroke="rgba(124,58,237,0.38)" strokeWidth="34" strokeLinecap="round" fill="none"/>
         {/* RIGHT ARM — wraps around phone */}
         <path d="M 292 210 Q 328 285 308 350 Q 300 375 262 390 L 242 400"
           stroke="rgba(124,58,237,0.38)" strokeWidth="34" strokeLinecap="round" fill="none"/>
