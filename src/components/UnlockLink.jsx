@@ -1,88 +1,108 @@
 import React, { useState } from "react";
-import phone21 from "../assets/images/phone21.png";
+import AdUnit from "./AdUnit";
 import "./UnlockLink.css";
 
-const phoneLeft = phone21;
-const phoneRight = phone21;
+const AD_DURATION = 5; // seconds the ad shows before the button activates
 
 function UnlockLink() {
-  const [loading, setLoading] = useState(false);
+  const [adShowing,  setAdShowing]  = useState(false);
+  const [adDone,     setAdDone]     = useState(false);
+  const [countdown,  setCountdown]  = useState(AD_DURATION);
 
-  // REAL WHATSAPP LINK (replace with your dynamic values later)
-  const phoneNumber = "2348130001122";
-  const message = "Hello, I want to view my bill link";
-  const whatsappLink =
-    "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
+  const phoneNumber  = "2348130001122";
+  const message      = "Hello, I want to view my bill link";
+  const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
-  const handleUnlock = () => {
-    setLoading(true);
+  const handleWatchAd = () => {
+    setAdShowing(true);
+    setCountdown(AD_DURATION);
 
-    // simulate watching an ad (5 seconds)
-    setTimeout(() => {
-      setLoading(false);
+    const timer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setAdShowing(false);
+          setAdDone(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
 
-      // redirect to WhatsApp
-      window.location.href = whatsappLink;
-    }, 5000);
+  const handleOpenWhatsApp = () => {
+    window.location.href = whatsappLink;
   };
 
   return (
-    <>
-      <div className="unlock-wrapper">
-        <h1 className="unlock-title">Unlock Your WhatsApp Link</h1>
-        <div className="underline"></div>
+    <div className="unlock-wrapper">
+      <h1 className="unlock-title">Unlock Your WhatsApp Link</h1>
+      <div className="underline" />
 
-        {/* Icons Row */}
-        <div className="unlock-icons">
-          <div className="icon-box">
-            <span className="icon-circle">▶</span>
-            <p>Watch a quick ad to activate your shareable WhatsApp Bill link</p>
-          </div>
-
-          <div className="icon-box">
-            <span className="icon-circle">!</span>
-            <p>
-              Required Step. This step is <br /> necessary to continue your bill
-              sharing on WhatsApp
-            </p>
-          </div>
-
-          <div className="icon-box">
-            <span className="icon-circle">►</span>
-            <p>
-              Ads help us keep ShareBill free <br /> for everyone worldwide
-            </p>
-          </div>
-
-          <div className="icon-box">
-            <span className="icon-circle">🔒</span>
-            <p>We never store your WhatsApp messages</p>
-          </div>
+      {/* Info icons */}
+      <div className="unlock-icons">
+        <div className="icon-box">
+          <span className="icon-circle">▶</span>
+          <p>Watch a quick ad to activate your shareable WhatsApp Bill link</p>
         </div>
-
-        <div className="unlock-content">
-          <img src={phoneLeft} alt="phone" className="unlock-phone left" />
-
-          <div className="unlock-center">
-            <button
-              className="unlock-btn"
-              onClick={handleUnlock}
-              disabled={loading}
-            >
-              {loading ? (
-                <div className="spinner"></div>
-              ) : (
-                "Unlock WhatsApp Link / Watch Ad"
-              )}
-            </button>
-
-            <p className="unlock-note">This takes less than 15 seconds</p>
-          </div>
-
-          <img src={phoneRight} alt="phone" className="unlock-phone right" />
+        <div className="icon-box">
+          <span className="icon-circle">!</span>
+          <p>Required step — necessary to continue bill sharing on WhatsApp</p>
+        </div>
+        <div className="icon-box">
+          <span className="icon-circle">♥</span>
+          <p>Ads keep ShareBill free for everyone worldwide</p>
+        </div>
+        <div className="icon-box">
+          <span className="icon-circle">🔒</span>
+          <p>We never store your WhatsApp messages</p>
         </div>
       </div>
-    </>
+
+      {/* AD DISPLAY AREA */}
+      {adShowing && (
+        <div className="unlock-ad-area">
+          {/* Real Moneytag ad renders here */}
+          <AdUnit style={{ minHeight: 120, borderRadius: 12 }} />
+
+          <div className="unlock-ad-footer">
+            <div className="unlock-ad-label">Advertisement</div>
+            <div className="unlock-ad-timer">
+              Please wait <strong>{countdown}s</strong> before continuing
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CTA */}
+      <div className="unlock-center" style={{ marginTop: adShowing ? 20 : 40 }}>
+        {!adShowing && !adDone && (
+          <>
+            <button className="unlock-btn" onClick={handleWatchAd}>
+              ▶ Watch Ad to Unlock WhatsApp Link
+            </button>
+            <p className="unlock-note">This takes less than {AD_DURATION} seconds</p>
+          </>
+        )}
+
+        {adShowing && (
+          <button className="unlock-btn" disabled style={{ opacity: 0.5 }}>
+            Please watch the ad… ({countdown}s)
+          </button>
+        )}
+
+        {adDone && (
+          <>
+            <button className="unlock-btn unlock-btn-ready" onClick={handleOpenWhatsApp}>
+              ✅ Open WhatsApp →
+            </button>
+            <p className="unlock-note" style={{ color: "#4ade80" }}>
+              Ad complete — your link is ready!
+            </p>
+          </>
+        )}
+      </div>
+    </div>
   );
 }
 

@@ -102,3 +102,27 @@
     transform: rotate(360deg);
   }
 }
+
+/* ── Ad display area ── */
+.unlock-ad-area {
+  width: 100%; max-width: 640px;
+  margin: 24px auto 0;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 16px;
+  padding: 16px;
+}
+.unlock-ad-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 10px; flex-wrap: wrap; gap: 6px;
+}
+.unlock-ad-label {
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+}
+.unlock-ad-timer { font-size: 13px; color: rgba(255,255,255,.55); }
+.unlock-ad-timer strong { color: #E040FB; }
+.unlock-btn-ready {
+  background: linear-gradient(135deg, #4ade80, #22c55e) !important;
+  box-shadow: 0 4px 24px rgba(74,222,128,.3) !important;
+}

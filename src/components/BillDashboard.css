@@ -441,3 +441,18 @@ th { font-weight: 600; background: rgba(255,255,255,.04); }
   border-radius: 8px;
   border-left: 2px solid rgba(255,165,0,.3);
 }
+
+/* ── Real ad slot inside AdWatchModal ── */
+.ad-real-slot {
+  margin: 0 20px;
+  padding: 12px;
+  background: rgba(255,255,255,.03);
+  border: 1px dashed rgba(255,255,255,.1);
+  border-radius: 12px;
+}
+.ad-slot-label {
+  font-size: 9px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: rgba(243,232,255,.3);
+  text-align: center; margin-bottom: 8px;
+}
+.ad-unit-container { display: block; }

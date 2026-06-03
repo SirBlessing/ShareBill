@@ -1,13 +1,32 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sharebill</title>
+    <title>ShareBill — Split bills. Collect payments easily.</title>
+    <meta name="description" content="Create a bill, add participants, share a WhatsApp link. Everyone pays, uploads their receipt, and you confirm. Free forever." />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!--
+      Moneytag Ad Network — global initialisation.
+      Loads once per page. The AdUnit component in each
+      ad placement then injects a scoped script with the
+      same zone ID so the network can render into it.
+    -->
+    <script>
+      (function(s){
+        s.dataset.zone = '11089549';
+        s.src = 'https://nap5k.com/tag.min.js';
+      })(
+        [document.documentElement, document.body]
+          .filter(Boolean)
+          .pop()
+          .appendChild(document.createElement('script'))
+      );
+    </script>
   </body>
 </html>

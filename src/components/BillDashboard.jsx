@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./BillDashboard.css";
+import AdUnit from "./AdUnit";
 
 const API          = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const APP_BASE_URL = window.location.origin;
@@ -35,16 +36,10 @@ function AdWatchModal({ onComplete }) {
   return (
     <div className="ad-overlay">
       <div className="ad-modal">
-        <div className="ad-banner">
-          <div className="ad-banner-tag">ADVERTISEMENT</div>
-          <div className="ad-banner-content">
-            <div className="ad-logo-box">📱</div>
-            <div>
-              <div className="ad-brand">ShareBill Pro</div>
-              <div className="ad-tagline">Split bills. Collect faster. Stress-free.</div>
-            </div>
-          </div>
-          <div className="ad-skip-note">Ad {AD_DURATION - seconds + 1} of 1</div>
+        {/* Real Moneytag ad renders here */}
+        <div className="ad-real-slot">
+          <div className="ad-slot-label">Advertisement</div>
+          <AdUnit style={{ minHeight: 90, borderRadius: 10 }} />
         </div>
 
         <div className="ad-countdown-wrap">
