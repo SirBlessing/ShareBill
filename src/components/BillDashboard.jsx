@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate, } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./BillDashboard.css";
 import AdUnit from "./AdUnit";
@@ -7,17 +7,6 @@ import AdUnit from "./AdUnit";
 const API          = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const APP_BASE_URL = window.location.origin;
 
-
-const adRef = useRef(null);
-
-useEffect(() => {
-  if (!adRef.current) return;
-  const s = document.createElement("script");
-  s.dataset.zone = "11089549";
-  s.src = "https://nap5k.com/tag.min.js";
-  s.async = true;
-  adRef.current.appendChild(s);
-}, []);
 /* ─────────────────────────────────────────────────────────────
    AD WATCH MODAL — used ONLY for the Reminder button
    5-second countdown, cannot be dismissed early
@@ -50,7 +39,7 @@ function AdWatchModal({ onComplete }) {
         {/* Real Moneytag ad renders here */}
         <div className="ad-real-slot">
           <div className="ad-slot-label">Advertisement</div>
-         <div ref={adRef} style={{ minHeight: 60, width: "100%", borderRadius: 12 }} />
+          <AdUnit style={{ minHeight: 90, borderRadius: 10 }} />
         </div>
 
         <div className="ad-countdown-wrap">
