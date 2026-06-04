@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./BillDashboard.css";
-import AdUnit from "./AdUnit";
 
 const API          = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const APP_BASE_URL = window.location.origin;
@@ -13,30 +12,11 @@ const APP_BASE_URL = window.location.origin;
 ───────────────────────────────────────────────────────────── */
 const AD_DURATION = 5;
 
-// At the top of AdWatchModal — replace the SVG ring useEffect block
-// ADD this import at the top of the file if not already there:
-// import React, { useEffect, useState, useRef } from "react";
-
-function AdWatchModal({ onComplete }) {
+function AdWatchModal({ onComplete, purpose = "remind" }) {
   const [seconds,  setSeconds]  = useState(AD_DURATION);
   const [progress, setProgress] = useState(0);
   const intervalRef = useRef(null);
 
-  /* ── Inject Moneytag ad when modal opens ── */
-  useEffect(() => {
-    const s = document.createElement("script");
-    s.dataset.zone = "11089549";
-    s.src = "https://nap5k.com/tag.min.js";
-    s.async = true;
-    document.body.appendChild(s);
-
-    // Clean up script when modal closes
-    return () => {
-      try { document.body.removeChild(s); } catch (_) {}
-    };
-  }, []);
-
-  /* ── Countdown ── */
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       setSeconds(s => {
@@ -52,13 +32,15 @@ function AdWatchModal({ onComplete }) {
     return () => clearInterval(intervalRef.current);
   }, [onComplete]);
 
+  const purposeText = purpose === "share"
+    ? "Watch this short ad to unlock your share links."
+    : "Watch this short ad to unlock reminders.";
+
   return (
     <div className="ad-overlay">
       <div className="ad-modal">
-        {/* REMOVE the old ad-banner / ad-real-slot block */}
-        {/* Replace with just the countdown + description */}
 
-        <div className="ad-countdown-wrap" style={{ marginTop: 28 }}>
+        <div className="ad-countdown-wrap" style={{ marginTop: 32 }}>
           <svg className="ad-ring" viewBox="0 0 60 60">
             <circle cx="30" cy="30" r="24"
               fill="none" stroke="rgba(255,255,255,.1)" strokeWidth="4"/>
@@ -68,18 +50,18 @@ function AdWatchModal({ onComplete }) {
               strokeDasharray={`${2 * Math.PI * 24}`}
               strokeDashoffset={`${2 * Math.PI * 24 * (1 - progress / 100)}`}
               transform="rotate(-90 30 30)"
-              style={{ transition: "stroke-dashoffset 0.9s linear" }}
+              style={{ transition:"stroke-dashoffset 0.9s linear" }}
             />
           </svg>
           <div className="ad-countdown-num">{Math.max(seconds, 0)}</div>
         </div>
 
         <div className="ad-progress-bar">
-          <div className="ad-progress-fill" style={{ width: `${progress}%` }} />
+          <div className="ad-progress-fill" style={{ width:`${progress}%` }} />
         </div>
 
         <p className="ad-desc">
-          Please wait while the ad loads.<br />
+          {purposeText}<br />
           Ads keep ShareBill free for everyone 💜
         </p>
         <p className="ad-wait">
@@ -193,10 +175,9 @@ const BillDashboard = () => {
                      ALSO gates the Mark Paid buttons (greyed until unlocked).
     remindAd       — true while the reminder ad is playing.
     remindUnlocked — true after reminder ad finishes; stays true for the session.
-    unlockLoading  — simple spinner on the Share Links unlock button (no modal).
   */
   const [shareUnlocked,  setShareUnlocked]  = useState(false);
-  const [unlockLoading,  setUnlockLoading]  = useState(false);
+  const [shareAd,        setShareAd]        = useState(false);  // ← modal for share links
   const [remindAd,       setRemindAd]       = useState(false);
   const [remindUnlocked, setRemindUnlocked] = useState(false);
 
@@ -214,13 +195,11 @@ const BillDashboard = () => {
     })();
   }, [id, navigate]);
 
-  /* Share Links — simple 3-second timeout, no modal */
-  const handleUnlockShare = () => {
-    setUnlockLoading(true);
-    setTimeout(() => {
-      setUnlockLoading(false);
-      setShareUnlocked(true);   // ← also unlocks Mark Paid buttons
-    }, 3000);
+  /* Share Links — now uses AdWatchModal same as Reminder */
+  const handleUnlockShare = () => setShareAd(true);
+  const handleShareAdComplete = () => {
+    setShareAd(false);
+    setShareUnlocked(true);   // unlocks share links AND mark paid buttons
   };
 
   /* Reminder ad done */
@@ -285,8 +264,11 @@ const BillDashboard = () => {
   return (
     <div className="bill-dashboard-page">
 
+      {/* Share links ad modal */}
+      {shareAd && <AdWatchModal onComplete={handleShareAdComplete} purpose="share" />}
+
       {/* Reminder ad modal */}
-      {remindAd && <AdWatchModal onComplete={handleRemindAdComplete} />}
+      {remindAd && <AdWatchModal onComplete={handleRemindAdComplete} purpose="remind" />}
 
       {/* Receipt modal */}
       {receiptModal && (
@@ -344,14 +326,9 @@ const BillDashboard = () => {
                 <button
                   className="remind-btn"
                   onClick={handleUnlockShare}
-                  disabled={unlockLoading}
                   style={{ width:"100%" }}
                 >
-                  {unlockLoading ? (
-                    <span>⏳ Loading ad…</span>
-                  ) : (
-                    "▶ Watch Ad to Unlock"
-                  )}
+                  ▶ Watch Ad to Unlock
                 </button>
               </>
             ) : (
