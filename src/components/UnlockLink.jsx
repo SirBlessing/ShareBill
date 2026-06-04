@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import AdUnit from "./AdUnit";
+// import AdUnit from "./AdUnit";
 import "./UnlockLink.css";
 
-const AD_DURATION = 15; // seconds the ad shows before the button activates
+const AD_DURATION = 20; // seconds the ad shows before the button activates
 
 function UnlockLink() {
   const [adShowing,  setAdShowing]  = useState(false);
@@ -13,23 +13,35 @@ function UnlockLink() {
   const message      = "Hello, I want to view my bill link";
   const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
-  const handleWatchAd = () => {
-    setAdShowing(true);
-    setCountdown(AD_DURATION);
+ 
 
-    const timer = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          setAdShowing(false);
-          setAdDone(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
+// In handleWatchAd, add the script injection:
+const handleWatchAd = () => {
+  setAdShowing(true);
+  setCountdown(AD_DURATION);
 
+  // Inject ad when user clicks Watch Ad
+  const s = document.createElement("script");
+  s.dataset.zone = "11089549";
+  s.src = "https://nap5k.com/tag.min.js";
+  s.async = true;
+  document.body.appendChild(s);
+
+  const timer = setInterval(() => {
+    setCountdown(prev => {
+      if (prev <= 1) {
+        clearInterval(timer);
+        setAdShowing(false);
+        setAdDone(true);
+        try { document.body.removeChild(s); } catch (_) {}
+        return 0;
+      }
+      return prev - 1;
+    });
+  }, 1000);
+};
+
+// Remove the <AdUnit /> from the JSX — Moneytag shows its own overlay
   const handleOpenWhatsApp = () => {
     window.location.href = whatsappLink;
   };
@@ -63,7 +75,7 @@ function UnlockLink() {
       {adShowing && (
         <div className="unlock-ad-area">
           {/* Real Moneytag ad renders here */}
-          <AdUnit style={{ minHeight: 120, borderRadius: 12 }} />
+          {/* <AdUnit style={{ minHeight: 120, borderRadius: 12 }} /> */}
 
           <div className="unlock-ad-footer">
             <div className="unlock-ad-label">Advertisement</div>
