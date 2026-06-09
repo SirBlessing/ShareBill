@@ -21,14 +21,28 @@ function toWhatsAppNumber(raw = "") {
 
 /* ─────────────────────────────────────────────
    AD WATCH MODAL
-   — no script injection, no side ads
-   — pure countdown gate only
+   Injects vignette ad on mount, runs countdown.
+   Vignette shows its own full-screen overlay.
 ───────────────────────────────────────────── */
 function AdWatchModal({ onComplete, purpose = "share" }) {
   const [seconds,  setSeconds]  = useState(AD_DURATION);
   const [progress, setProgress] = useState(0);
   const intervalRef = useRef(null);
 
+  /* ── Inject vignette ad when modal opens ── */
+  useEffect(() => {
+    const s = document.createElement("script");
+    s.dataset.zone = "11101728";
+    s.src = "https://n6wxm.com/vignette.min.js";
+    s.async = true;
+    document.body.appendChild(s);
+
+    return () => {
+      try { document.body.removeChild(s); } catch (_) {}
+    };
+  }, []);
+
+  /* ── Countdown ── */
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       setSeconds(prev => {
@@ -172,11 +186,9 @@ const BillDashboard = () => {
   const [receiptModal,  setReceiptModal]  = useState(null);
   const [copiedIndex,   setCopiedIndex]   = useState(null);
 
-  // Share links ad gate — also gates Mark Paid
-  const [shareAd,       setShareAd]       = useState(false);
-  const [shareUnlocked, setShareUnlocked] = useState(false);
+  const [shareAd,        setShareAd]        = useState(false);
+  const [shareUnlocked,  setShareUnlocked]  = useState(false);
 
-  // Reminder ad gate
   const [remindAd,       setRemindAd]       = useState(false);
   const [remindUnlocked, setRemindUnlocked] = useState(false);
   const [remindModal,    setRemindModal]    = useState(false);
@@ -199,7 +211,7 @@ const BillDashboard = () => {
   }, [id, navigate]);
 
   /* ── share ad complete → unlock share links + mark paid ── */
-  const handleUnlockShare    = () => setShareAd(true);
+  const handleUnlockShare     = () => setShareAd(true);
   const handleShareAdComplete = () => {
     setShareAd(false);
     setShareUnlocked(true);
@@ -239,7 +251,7 @@ const BillDashboard = () => {
     } catch { alert("Failed to close bill."); }
   };
 
-  /* ── whatsapp link builder ── */
+  /* ── whatsapp link ── */
   const buildWhatsAppLink = (participant, index) => {
     const phone    = toWhatsAppNumber(participant.whatsapp);
     const pageLink = `${APP_BASE_URL}/pay/${id}/${index}`;
@@ -259,7 +271,6 @@ const BillDashboard = () => {
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
-  /* ── guard ── */
   if (loading || !bill) return (
     <p style={{ color: "white", padding: 40 }}>Loading…</p>
   );
@@ -270,13 +281,10 @@ const BillDashboard = () => {
   const pendingCount  = participants.length - paidCount - awaitingCount;
   const needRemind    = pendingCount + awaitingCount;
 
-  /* ─────────────────────────────────────────────
-     RENDER
-  ───────────────────────────────────────────── */
   return (
     <div className="bill-dashboard-page">
 
-      {/* ── AD MODALS (one at a time) ── */}
+      {/* ── AD MODALS ── */}
       {shareAd  && <AdWatchModal onComplete={handleShareAdComplete}  purpose="share"  />}
       {remindAd && <AdWatchModal onComplete={handleRemindAdComplete} purpose="remind" />}
 
@@ -307,7 +315,6 @@ const BillDashboard = () => {
         <div className="bill-summary">
           <h1 className="page-title">Bill Dashboard</h1>
 
-          {/* Bill summary */}
           <div className="summary-box">
             <h3>Bill Summary</h3>
             <p><strong>Bill:</strong> {bill.title}</p>
@@ -316,7 +323,6 @@ const BillDashboard = () => {
             <small>Only visible to you (the creator)</small>
           </div>
 
-          {/* Progress */}
           <div className="summary-box">
             <h3>Progress</h3>
             <p>✅ Paid: <strong>{paidCount}</strong> / {participants.length}</p>
@@ -422,14 +428,12 @@ const BillDashboard = () => {
                   const isCreator  = !!p.isCreator;
                   const isUpdating = actionLoading === i;
 
-                  /* decide action cell */
                   let actionCell;
                   if (isUpdating) {
                     actionCell = (
                       <div className="spinner" style={{ margin: "0 auto" }} />
                     );
                   } else if (status === "paid") {
-                    /* Undo always free */
                     actionCell = (
                       <button className="undo-btn"
                         onClick={() => handleStatusChange(i, "pending")}>
@@ -437,7 +441,6 @@ const BillDashboard = () => {
                       </button>
                     );
                   } else if (!shareUnlocked) {
-                    /* Greyed — no click, no ad trigger */
                     actionCell = (
                       <button
                         className="paid-btn paid-btn-locked"
