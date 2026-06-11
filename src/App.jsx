@@ -2,14 +2,17 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import "./App.css";
 import "./Home.css";
 
-import Navbar          from "./components/Navbar";
-import HeroSection     from "./components/HeroSection";
-import ProofStrip      from "./components/ProofStrip";
-import HowItWorks      from "./components/HowItWorks";
-import Features        from "./components/Features";
-import Testimonials    from "./components/Testimonials";
-import Contact         from "./components/Contact";
-import Footer          from "./components/Footer";
+import useVignette   from "./useVignette";
+
+import Navbar        from "./components/Navbar";
+import HeroSection   from "./components/HeroSection";
+import ProofStrip    from "./components/ProofStrip";
+import HowItWorks    from "./components/HowItWorks";
+import Features      from "./components/Features";
+import Testimonials  from "./components/Testimonials";
+import Contact       from "./components/Contact";
+import Footer        from "./components/Footer";
+import BannerAd      from "./components/BannerAd";
 
 import CreateAccount   from "./components/CreateAccount";
 import Login           from "./components/Login";
@@ -19,50 +22,66 @@ import Dashboard       from "./components/Dashboard";
 import ActiveBills     from "./components/ActiveBills";
 import BillDashboard   from "./components/BillDashboard";
 import ParticipantPage from "./components/ParticipantPage";
-import LegalPage       from "./components/LegalPage";       // ← new
-
-const NO_NAVBAR = ["/pay/", "/legal"];   // pages with their own headers
+import LegalPage       from "./components/LegalPage";
 
 function Layout() {
-  const location  = useLocation();
-  const hideNavbar = NO_NAVBAR.some(p => location.pathname.startsWith(p));
-  const isHome    = location.pathname === "/";
+  const location         = useLocation();
+  const triggerVignette  = useVignette(); // ← auto-fires on inner pages, returns manual trigger too
+
+  const isParticipantPage = location.pathname.startsWith("/pay/");
+  const isHome            = location.pathname === "/";
 
   return (
     <>
       {isHome && (
         <>
           <div className="home-orbs">
-            <div className="orb orb-1" /><div className="orb orb-2" /><div className="orb orb-3" />
+            <div className="orb orb-1" />
+            <div className="orb orb-2" />
+            <div className="orb orb-3" />
           </div>
           <div className="home-grid" />
         </>
       )}
 
-      {!hideNavbar && <Navbar />}
+      {!isParticipantPage && <Navbar />}
 
       <Routes>
-        {/* HOME */}
+
+        {/* ── HOME ── */}
         <Route path="/" element={
-          <><HeroSection /><ProofStrip /><HowItWorks /><Features /><Testimonials /><Contact /><Footer /></>
+          <>
+            <HeroSection />
+            <ProofStrip />
+            <HowItWorks />
+
+            {/* Banner ad between HowItWorks and Features — non-intrusive */}
+            <div style={{ position:"relative", zIndex:1 }}>
+              <BannerAd className="banner-home" />
+            </div>
+
+            <Features />
+            <Testimonials />
+            <Contact />
+            <Footer />
+          </>
         } />
 
-        {/* AUTH */}
+        {/* ── AUTH ── */}
         <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/login"          element={<Login />} />
 
-        {/* APP */}
-        <Route path="/create-bill"  element={<CreateBill />} />
+        {/* ── APP (vignette auto-fires on all of these via useVignette) ── */}
+        <Route path="/create-bill"  element={<CreateBill  triggerVignette={triggerVignette} />} />
         <Route path="/unlock-link"  element={<UnlockLink />} />
-        <Route path="/dashboard"    element={<Dashboard />} />
-        <Route path="/ActiveBills"  element={<ActiveBills />} />
+        <Route path="/dashboard"    element={<Dashboard   triggerVignette={triggerVignette} />} />
+        <Route path="/ActiveBills"  element={<ActiveBills triggerVignette={triggerVignette} />} />
         <Route path="/bill/:id"     element={<BillDashboard />} />
 
-        {/* LEGAL — its own header, no app navbar */}
-        <Route path="/legal"        element={<LegalPage />} />
-
-        {/* PUBLIC PARTICIPANT PAGE */}
+        {/* ── PUBLIC ── */}
         <Route path="/pay/:billId/:participantIndex" element={<ParticipantPage />} />
+        <Route path="/legal" element={<LegalPage />} />
+
       </Routes>
     </>
   );
@@ -71,7 +90,9 @@ function Layout() {
 function App() {
   return (
     <Router>
-      <div className="app"><Layout /></div>
+      <div className="app">
+        <Layout />
+      </div>
     </Router>
   );
 }
