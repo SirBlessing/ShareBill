@@ -12,7 +12,7 @@ import Features      from "./components/Features";
 import Testimonials  from "./components/Testimonials";
 import Contact       from "./components/Contact";
 import Footer        from "./components/Footer";
-import BannerAd      from "./components/BannerAd";
+// import BannerAd      from "./components/BannerAd";
 
 import CreateAccount   from "./components/CreateAccount";
 import Login           from "./components/Login";
@@ -56,9 +56,9 @@ function Layout() {
             <HowItWorks />
 
             {/* Banner ad between HowItWorks and Features — non-intrusive */}
-            <div style={{ position:"relative", zIndex:1 }}>
+            {/* <div style={{ position:"relative", zIndex:1 }}>
               <BannerAd className="banner-home" />
-            </div>
+            </div> */}
 
             <Features />
             <Testimonials />
