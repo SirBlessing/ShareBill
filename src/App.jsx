@@ -26,7 +26,7 @@ import LegalPage       from "./components/LegalPage";
 
 function Layout() {
   const location         = useLocation();
-  const triggerVignette  = useVignette(); // ← auto-fires on inner pages, returns manual trigger too
+  // const triggerVignette  = useVignette(); // ← auto-fires on inner pages, returns manual trigger too
 
   const isParticipantPage = location.pathname.startsWith("/pay/");
   const isHome            = location.pathname === "/";
@@ -72,10 +72,10 @@ function Layout() {
         <Route path="/login"          element={<Login />} />
 
         {/* ── APP (vignette auto-fires on all of these via useVignette) ── */}
-        <Route path="/create-bill"  element={<CreateBill  triggerVignette={triggerVignette} />} />
+        <Route path="/create-bill"  element={<CreateBill   />} />
         <Route path="/unlock-link"  element={<UnlockLink />} />
-        <Route path="/dashboard"    element={<Dashboard   triggerVignette={triggerVignette} />} />
-        <Route path="/ActiveBills"  element={<ActiveBills triggerVignette={triggerVignette} />} />
+        <Route path="/dashboard"    element={<Dashboard   />} />
+        <Route path="/ActiveBills"  element={<ActiveBills  />} />
         <Route path="/bill/:id"     element={<BillDashboard />} />
 
         {/* ── PUBLIC ── */}
