@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import "./App.css";
 import "./Home.css";
 
-import useVignette   from "./useVignette";
+// import useVignette   from "./useVignette";
 
 import Navbar        from "./components/Navbar";
 import HeroSection   from "./components/HeroSection";
